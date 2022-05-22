@@ -17,7 +17,7 @@ package("nzsl")
 		end
 	end)
 
-	on_install("windows", "linux", "mingw", "macosx", function (package)
+	on_install("windows", "linux", "mingw", "macosx", "bsd", function (package)
 		import("package.tools.xmake").install(package)
 	end)
 
