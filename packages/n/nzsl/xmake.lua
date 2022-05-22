@@ -7,8 +7,8 @@ package("nzsl")
 
 	add_versions("2022.05.22", "793ac9f02332171c1d050f5f5d8163da61336ec3")
 
-	add_deps("nazarautils")
-	add_deps("fmt", "efsw", "frozen", "ordered_map", { private = true })
+	add_deps("nazarautils", "fmt", "efsw")
+	add_deps("frozen", "ordered_map", { private = true })
 
 	on_load(function (package)
         package:addenv("PATH", "bin")
