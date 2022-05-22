@@ -1,5 +1,5 @@
 package("nazarautils")
-	set_homepage("https://github.com/NazaraEngine/NazaraUtils")
+	set_homepage("https://github.com/NazaraEngine")
 	set_description("Header-only utility library for Nazara projects")
 	set_license("MIT")
 
