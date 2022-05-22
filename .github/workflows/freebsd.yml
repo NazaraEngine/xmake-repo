@@ -2,8 +2,7 @@ name: FreeBSD
 
 on:
   pull_request:
-    branches:
-      - dev
+  push:
 
 jobs:
   build:

@@ -2,8 +2,7 @@ name: Cross (Musl)
 
 on:
   pull_request:
-    branches:
-      - dev
+  push:
 
 jobs:
   build:
