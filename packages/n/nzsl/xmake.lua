@@ -10,6 +10,13 @@ package("nzsl")
 	add_deps("nazarautils")
 	add_deps("fmt", "efsw", "frozen", "ordered_map", { private = true })
 
+	on_load(function (package)
+        package:addenv("PATH", "bin")
+		if not package:config("shared") then
+			package:add("defines", "NZSL_STATIC")
+		end
+	end)
+
 	on_install("windows", "linux", "mingw", "macosx", function (package)
 		import("package.tools.xmake").install(package)
 	end)
@@ -18,7 +25,7 @@ package("nzsl")
         os.vrun("nzslc --help")
 		assert(package:check_cxxsnippets({test = [[
 			void test() {
-				nzsl::ShaderAst::ModulePtr shaderModule = nzs::ShaderLang::Parse(R"(
+				nzsl::ShaderAst::ModulePtr shaderModule = nzsl::ShaderLang::Parse(R"(
 					[nzsl_version("1.0")]
 					module;
 
