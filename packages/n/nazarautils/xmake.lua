@@ -1,4 +1,6 @@
 package("nazarautils")
+
+	set_kind("library", {headeronly = true})
 	set_homepage("https://github.com/NazaraEngine")
 	set_description("Header-only utility library for Nazara projects")
 	set_license("MIT")
