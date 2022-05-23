@@ -25,7 +25,7 @@ package("nzsl")
         os.vrun("nzslc --help")
 		assert(package:check_cxxsnippets({test = [[
 			void test() {
-				nzsl::ShaderAst::ModulePtr shaderModule = nzsl::ShaderLang::Parse(R"(
+				nzsl::Ast::ModulePtr shaderModule = nzsl::Parse(R"(
 					[nzsl_version("1.0")]
 					module;
 
