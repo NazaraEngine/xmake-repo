@@ -5,13 +5,13 @@ package("nzsl")
 
 	add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-	add_versions("2022.05.23", "94c8cedea954f587e52073216d70a0c64fe4dca6")
+	add_versions("2022.05.24", "cfda8e52436796c57746f9ecd6db7b440a9b1ccc")
 
 	add_deps("nazarautils", "fmt", "efsw")
 	add_deps("frozen", "ordered_map", { private = true })
 
 	on_load(function (package)
-        package:addenv("PATH", "bin")
+		package:addenv("PATH", "bin")
 		if not package:config("shared") then
 			package:add("defines", "NZSL_STATIC")
 		end
@@ -22,7 +22,7 @@ package("nzsl")
 	end)
 
 	on_test(function (package)
-        os.vrun("nzslc --help")
+		os.vrun("nzslc --help")
 		assert(package:check_cxxsnippets({test = [[
 			void test() {
 				nzsl::Ast::ModulePtr shaderModule = nzsl::Parse(R"(
