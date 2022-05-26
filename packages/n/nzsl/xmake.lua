@@ -23,6 +23,9 @@ package("nzsl")
 		if package:config("fs_watcher") then
 			package:add("deps", "efsw")
 		end
+		if package:config("with_nzslc") then
+			package:add("deps", "nlohmann_json", { private = true })
+		end
 	end)
 
 	on_install("windows", "linux", "mingw", "macosx", "bsd", "iphoneos", "android", function (package)
