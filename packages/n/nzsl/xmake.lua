@@ -28,7 +28,7 @@ package("nzsl")
 		end
 	end)
 
-	on_install("windows", "linux", "mingw", "macosx", "bsd", "iphoneos", "android", function (package)
+	on_install(function (package)
         local configs = {}
 		configs.fs_watcher = package:config("fs_watcher") or false
 		configs.with_nzslc = package:config("with_nzslc") or false
@@ -36,7 +36,7 @@ package("nzsl")
 	end)
 
 	on_test(function (package)
-		if package:config("with_nzslc") then
+		if package:config("with_nzslc") and not package:is_plat("iphoneos", "android", "cross") and (not package:is_plat("mingw") or is_host("windows")) then
         	os.vrun("nzslc --version")
 		end
 		assert(package:check_cxxsnippets({test = [[
