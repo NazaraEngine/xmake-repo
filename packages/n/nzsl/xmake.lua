@@ -5,24 +5,37 @@ package("nzsl")
 
 	add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-	add_versions("2022.05.24", "cfda8e52436796c57746f9ecd6db7b440a9b1ccc")
+	add_versions("2022.05.26", "01fc5e37c2a23b4fed2bb09d3485d3d77381b381")
 
-	add_deps("nazarautils", "fmt", "efsw")
+	add_deps("nazarautils")
 	add_deps("frozen", "ordered_map", { private = true })
+
+	add_configs("with_nzslc", {description = "Includes standalone compiler", default = true, type = "boolean"})
+	if is_plat("windows", "linux", "mingw", "macosx", "bsd") then
+		add_configs("fs_watcher", {description = "Includes filesystem watcher", default = true, type = "boolean"})
+	end
 
 	on_load(function (package)
 		package:addenv("PATH", "bin")
 		if not package:config("shared") then
 			package:add("defines", "NZSL_STATIC")
 		end
+		if package:config("fs_watcher") then
+			package:add("deps", "efsw")
+		end
 	end)
 
-	on_install("windows", "linux", "mingw", "macosx", "bsd", function (package)
-		import("package.tools.xmake").install(package)
+	on_install("windows", "linux", "mingw", "macosx", "bsd", "iphoneos", "android", function (package)
+        local configs = {}
+		configs.fs_watcher = package:config("fs_watcher") or false
+		configs.with_nzslc = package:config("with_nzslc") or false
+		import("package.tools.xmake").install(package, configs)
 	end)
 
 	on_test(function (package)
-		os.vrun("nzslc --help")
+		if package:config("with_nzslc") then
+        	os.vrun("nzslc --version")
+		end
 		assert(package:check_cxxsnippets({test = [[
 			void test() {
 				nzsl::Ast::ModulePtr shaderModule = nzsl::Parse(R"(
