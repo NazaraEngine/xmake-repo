@@ -36,7 +36,7 @@ package("nzsl")
 	end)
 
 	on_test(function (package)
-		if package:config("with_nzslc") and not package:is_cross()) then
+		if package:config("with_nzslc") and not package:is_cross() then
         	os.vrun("nzslc --version")
 		end
 		assert(package:check_cxxsnippets({test = [[
