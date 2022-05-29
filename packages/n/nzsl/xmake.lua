@@ -5,7 +5,7 @@ package("nzsl")
 
 	add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-	add_versions("2022.05.27", "a5e05572ec1318fd5fbac3f5e145666d5f0f1e91")
+	add_versions("2022.05.29", "0ac8c42d71a27e0b9f96bd741fa0420cc5b18355")
 
 	add_deps("nazarautils")
 	add_deps("frozen", "ordered_map", { private = true })
@@ -37,7 +37,7 @@ package("nzsl")
 
 	on_test(function (package)
 		if package:config("with_nzslc") and not package:is_cross() then
-        	os.vrun("nzslc --version")
+			os.vrun("nzslc --version")
 		end
 		assert(package:check_cxxsnippets({test = [[
 			void test() {
