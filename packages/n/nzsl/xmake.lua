@@ -8,6 +8,7 @@ package("nzsl")
 	add_versions("2022.06.05", "090e724deb376740f213e02b401ecc6348eeeb5e")
 
 	add_deps("nazarautils")
+	add_deps("frozen", "hopscotch_map", "ordered_map", { private = true })
 
 	add_configs("with_nzslc", {description = "Includes standalone compiler", default = true, type = "boolean"})
 	if is_plat("windows", "linux", "mingw", "macosx", "bsd") then
@@ -21,6 +22,9 @@ package("nzsl")
 		end
 		if package:config("fs_watcher") then
 			package:add("deps", "efsw")
+		end
+		if package:config("with_nzslc") then
+			package:add("deps", "nlohmann_json", { private = true })
 		end
 	end)
 
