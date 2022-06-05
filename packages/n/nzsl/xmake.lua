@@ -8,7 +8,7 @@ package("nzsl")
 	add_versions("2022.06.05", "090e724deb376740f213e02b401ecc6348eeeb5e")
 
 	add_deps("nazarautils")
-	add_deps("frozen", "hopscotch_map", "ordered_map", { private = true })
+	add_deps("frozen", "hopscotch-map", "ordered_map", { private = true })
 
 	add_configs("with_nzslc", {description = "Includes standalone compiler", default = true, type = "boolean"})
 	if is_plat("windows", "linux", "mingw", "macosx", "bsd") then
