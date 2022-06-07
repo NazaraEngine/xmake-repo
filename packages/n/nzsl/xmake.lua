@@ -59,5 +59,5 @@ package("nzsl")
 					}
 				)");
 			}
-		]]}, {configs = {languages = "c++17"}, includes = "NZSL/ShaderLangParser.hpp"}))
+		]]}, {configs = {languages = "c++17"}, includes = "NZSL/Parser.hpp"}))
 	end)
