@@ -5,10 +5,10 @@ package("nzsl")
 
 	add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-	add_versions("2022.06.22", "ecaf2b48ad925f5065713d1ed9bc5b07b47db29e")
+	add_versions("2022.06.26", "988880d7deac080209bc57edecb1ecacae470e55")
 
 	add_deps("nazarautils")
-	add_deps("frozen", "ordered_map", { private = true })
+	add_deps("fmt", "frozen", "ordered_map", { private = true })
 
 	add_configs("with_nzslc", {description = "Includes standalone compiler", default = true, type = "boolean"})
 	if is_plat("windows", "linux", "mingw", "macosx", "bsd") then
