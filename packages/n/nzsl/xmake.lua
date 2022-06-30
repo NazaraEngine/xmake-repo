@@ -5,7 +5,7 @@ package("nzsl")
 
 	add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-	add_versions("2022.06.26", "988880d7deac080209bc57edecb1ecacae470e55")
+	add_versions("2022.06.30", "c72b13f86a87d9308f4b77dac3f7a1bd60f60fea")
 
 	add_deps("nazarautils", "fmt")
 	add_deps("frozen", "ordered_map", { private = true })
@@ -32,6 +32,7 @@ package("nzsl")
 		local configs = {}
 		configs.fs_watcher = package:config("fs_watcher") or false
 		configs.with_nzslc = package:config("with_nzslc") or false
+		configs.erronwarn = false
 		import("package.tools.xmake").install(package, configs)
 	end)
 
