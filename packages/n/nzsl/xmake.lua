@@ -5,11 +5,12 @@ package("nzsl")
 
 	add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-	add_versions("2022.07.02", "eec4c57694251c2f4d2068b70c28ee6f8af274ef")
+	add_versions("2022.07.16", "b0a3994f5fe927bfcba3c61af335a094eb24fd69")
 
 	add_deps("nazarautils", "fmt")
 	add_deps("frozen", "ordered_map", { private = true })
 
+	add_configs("with_symbols", {description = "Enable debug symbols in release", default = false, type = "boolean"})
 	add_configs("with_nzslc", {description = "Includes standalone compiler", default = true, type = "boolean"})
 	if is_plat("windows", "linux", "mingw", "macosx", "bsd") then
 		add_configs("fs_watcher", {description = "Includes filesystem watcher", default = true, type = "boolean"})
@@ -33,6 +34,13 @@ package("nzsl")
 		configs.fs_watcher = package:config("fs_watcher") or false
 		configs.with_nzslc = package:config("with_nzslc") or false
 		configs.erronwarn = false
+		if package:is_debug() then
+			configs.mode = "debug"
+		elseif package:config("with_symbols") then
+			configs.mode = "releasedbg"
+		else
+			configs.mode = "release"
+		end
 		import("package.tools.xmake").install(package, configs)
 	end)
 
