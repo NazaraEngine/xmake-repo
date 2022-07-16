@@ -5,7 +5,7 @@ package("nzsl")
 
 	add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-	add_versions("2022.07.16", "b0a3994f5fe927bfcba3c61af335a094eb24fd69")
+	add_versions("2022.07.17", "4f68b15500dc13ce8c1cc53faa7e119dfd8c8705")
 
 	add_deps("nazarautils", "fmt")
 	add_deps("frozen", "ordered_map", { private = true })
