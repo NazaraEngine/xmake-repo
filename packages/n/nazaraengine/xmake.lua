@@ -162,10 +162,10 @@ package("nazaraengine")
 
 		if package:is_debug() then
 			configs.mode = "debug"
-		elseif package:config("with_symbols") then
+		else--if package:config("with_symbols") then
 			configs.mode = "releasedbg"
-		else
-			configs.mode = "release"
+		--else
+		--	configs.mode = "release"
 		end
 		import("package.tools.xmake").install(package, configs)
 	end)
