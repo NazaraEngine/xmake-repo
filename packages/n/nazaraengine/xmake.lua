@@ -74,7 +74,7 @@ package("nazaraengine")
         package:add("deps", "freetype", { configs = { bzip2 = true, png = true, woff2 = true, zlib = true, debug = package:debug() } })
         package:add("deps", "newtondynamics", { debug = is_plat("windows") and package:debug() })
         if package:config("entt") then
-            package:add("deps", "ett 3.10.1")
+            package:add("deps", "entt 3.10.1")
         end
     end)
 
