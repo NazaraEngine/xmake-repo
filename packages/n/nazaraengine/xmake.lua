@@ -4,7 +4,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2022.07.27", "50cdab11f307de2996aabf57e75a7fdc939c047a")
+    add_versions("2022.07.27", "9197bf964d75a81774fba0dbae2520b3059d920b")
 
     add_deps("nazarautils")
     add_deps("chipmunk2d", "dr_wav", "efsw", "fmt", "frozen", "kiwisolver", "libflac", "libsdl", "minimp3", "ordered_map", "stb")
@@ -23,7 +23,7 @@ package("nazaraengine")
     add_configs("plugin-assimp", {description = "Includes the assimp plugin", default = false, type = "boolean"})
     add_configs("plugin-ffmpeg", {description = "Includes the ffmpeg plugin", default = false, type = "boolean"})
     add_configs("entt",          {description = "Includes EnTT to use components and systems", default = true, type = "boolean"})
-	add_configs("with_symbols",  {description = "Enable debug symbols in release", default = false, type = "boolean"})
+    add_configs("with_symbols",  {description = "Enable debug symbols in release", default = false, type = "boolean"})
 
     if is_plat("linux") then
         add_syslinks("pthread")
@@ -154,26 +154,28 @@ package("nazaraengine")
         }
     end)
 
-	on_install("windows", "linux", "macosx", function (package)
-		local configs = {}
+    on_install("windows", "mingw", "linux", "macosx", function (package)
+        local configs = {}
         configs.assimp = package:config("plugin-assimp")
         configs.ffmpeg = package:config("plugin-ffmpeg")
-		configs.unitybuild = true
+        configs.examples = false
+        configs.override_runtime = false
+        configs.unitybuild = true
 
-		if package:is_debug() then
-			configs.mode = "debug"
-		elseif package:config("with_symbols") then
-			configs.mode = "releasedbg"
-		else
-			configs.mode = "release"
-		end
-		import("package.tools.xmake").install(package, configs)
-	end)
+        if package:is_debug() then
+            configs.mode = "debug"
+        elseif package:config("with_symbols") then
+            configs.mode = "releasedbg"
+        else
+            configs.mode = "release"
+        end
+        import("package.tools.xmake").install(package, configs)
+    end)
 
-	on_test(function (package)
-		assert(package:check_cxxsnippets({test = [[
-			void test() {
+    on_test(function (package)
+        assert(package:check_cxxsnippets({test = [[
+            void test() {
                 Nz::Modules<Nz::Core> nazara;
-			}
-		]]}, {configs = {languages = "c++17"}, includes = "Nazara/Core.hpp"}))
-	end)
+            }
+        ]]}, {configs = {languages = "c++17"}, includes = "Nazara/Core.hpp"}))
+    end)
