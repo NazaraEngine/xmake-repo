@@ -4,7 +4,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2022.07.27", "1e1dc3ebce448b846a339a73c3bae2f6e59da39c")
+    add_versions("2022.07.27", "50cdab11f307de2996aabf57e75a7fdc939c047a")
 
     add_deps("nazarautils")
     add_deps("chipmunk2d", "dr_wav", "efsw", "fmt", "frozen", "kiwisolver", "libflac", "libsdl", "minimp3", "ordered_map", "stb")
@@ -80,15 +80,15 @@ package("nazaraengine")
 
     on_fetch(function (package)
         local nazaradir = os.getenv("NAZARA_ENGINE_PATH")
-        if not os.isdir(nazaradir) then 
+        if not nazaradir or not os.isdir(nazaradir) then 
             return
         end
 
         local defines = {}
-        local includedirs = package:installdir("include")
+        local includedirs = path.join(nazaradir, "include")
         local links = {}
         local libprefix = package:debug() and "debug" or "releasedbg"
-        local linkdirs = package:installdir("bin/" .. package:plat() .. "_" .. package:arch() .. "_" .. libprefix)
+        local linkdirs = path.join(nazaradir, "bin/" .. package:plat() .. "_" .. package:arch() .. "_" .. libprefix)
         local syslinks = {}
 
         local prefix = "Nazara"
@@ -162,10 +162,10 @@ package("nazaraengine")
 
 		if package:is_debug() then
 			configs.mode = "debug"
-		else--if package:config("with_symbols") then
+		elseif package:config("with_symbols") then
 			configs.mode = "releasedbg"
-		--else
-		--	configs.mode = "release"
+		else
+			configs.mode = "release"
 		end
 		import("package.tools.xmake").install(package, configs)
 	end)
