@@ -7,9 +7,9 @@ package("nazaraengine")
     add_versions("2022.07.28", "c6851d93c2f255801545d8cf707ade3b16c205db")
 
     add_deps("nazarautils")
-    add_deps("chipmunk2d", "dr_wav", "efsw", "fmt", "frozen", "kiwisolver", "libflac", "libsdl", "minimp3", "ordered_map", "stb")
-    add_deps("libvorbis", { configs = { with_vorbisenc = false } })
-    add_deps("openal-soft", { configs = { shared = true }})
+    add_deps("chipmunk2d", "dr_wav", "efsw", "fmt", "frozen", "kiwisolver", "libflac", "libsdl", "minimp3", "ordered_map", "stb", { private = true })
+    add_deps("libvorbis", { private = true, configs = { with_vorbisenc = false } })
+    add_deps("openal-soft", { private = true, configs = { shared = true }})
 
     add_configs("audio",         {description = "Includes the audio module", default = true, type = "boolean"})
     add_configs("graphics",      {description = "Includes the graphics module", default = true, type = "boolean"})
@@ -75,8 +75,8 @@ package("nazaraengine")
 
     on_load(function (package)
         package:add("deps", "nzsl", { debug = package:debug(), configs = { with_symbols = package:config("with_symbols"), shared = true } })
-        package:add("deps", "freetype", { configs = { bzip2 = true, png = true, woff2 = true, zlib = true, debug = package:debug() } })
-        package:add("deps", "newtondynamics", { debug = is_plat("windows") and package:debug() })
+        package:add("deps", "freetype", { private = true, configs = { bzip2 = true, png = true, woff2 = true, zlib = true, debug = package:debug() } })
+        package:add("deps", "newtondynamics", { private = true, debug = is_plat("windows") and package:debug() })
         if package:config("entt") then
             package:add("deps", "entt 3.10.1")
         end
