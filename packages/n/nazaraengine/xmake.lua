@@ -73,26 +73,9 @@ package("nazaraengine")
         return package:config("plugin-ffmpeg")
     end
 
-    on_load(function (package)
-        package:add("deps", "nzsl", { debug = package:debug(), configs = { with_symbols = package:config("with_symbols"), shared = true } })
-        package:add("deps", "freetype", { private = true, configs = { bzip2 = true, png = true, woff2 = true, zlib = true, debug = package:debug() } })
-        package:add("deps", "newtondynamics", { private = true, debug = is_plat("windows") and package:debug() })
-        if package:config("entt") then
-            package:add("deps", "entt 3.10.1")
-        end
-    end)
-
-    on_fetch(function (package)
-        local nazaradir = os.getenv("NAZARA_ENGINE_PATH")
-        if not nazaradir or not os.isdir(nazaradir) then 
-            return
-        end
-
+    local function build_config(package)
         local defines = {}
-        local includedirs = path.join(nazaradir, "include")
         local links = {}
-        local libprefix = package:debug() and "debug" or "releasedbg"
-        local linkdirs = path.join(nazaradir, "bin/" .. package:plat() .. "_" .. package:arch() .. "_" .. libprefix)
         local syslinks = {}
 
         local prefix = "Nazara"
@@ -151,11 +134,37 @@ package("nazaraengine")
 
         return {
             defines = defines,
-            includedirs = includedirs,
             links = links,
-            linkdirs = linkdirs,
             syslinks = syslinks
         }
+    end
+
+    on_load(function (package)
+        package:add("deps", "nzsl", { debug = package:debug(), configs = { with_symbols = package:config("with_symbols"), shared = true } })
+        package:add("deps", "freetype", { private = true, configs = { bzip2 = true, png = true, woff2 = true, zlib = true, debug = package:debug() } })
+        package:add("deps", "newtondynamics", { private = true, debug = is_plat("windows") and package:debug() })
+        if package:config("entt") then
+            package:add("deps", "entt 3.10.1")
+        end
+        package:add(build_config(package))
+    end)
+
+    on_fetch(function (package)
+        local nazaradir = os.getenv("NAZARA_ENGINE_PATH")
+        if not nazaradir or not os.isdir(nazaradir) then 
+            return
+        end
+
+        local includedirs = path.join(nazaradir, "include")
+        local libprefix = package:debug() and "debug" or "releasedbg"
+        local linkdirs = path.join(nazaradir, "bin/" .. package:plat() .. "_" .. package:arch() .. "_" .. libprefix)
+
+        local config = build_config(package)
+
+        return table.join2({
+            includedirs = includedirs,
+            linkdirs = linkdirs,
+        }, config)
     end)
 
     on_install("windows", "mingw", "linux", "macosx", function (package)
