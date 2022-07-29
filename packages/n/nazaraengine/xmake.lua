@@ -164,7 +164,6 @@ package("nazaraengine")
         configs.ffmpeg = package:config("plugin-ffmpeg")
         configs.examples = false
         configs.override_runtime = false
-        configs.unitybuild = true
 
         if package:is_debug() then
             configs.mode = "debug"
