@@ -146,7 +146,9 @@ package("nazaraengine")
         if package:config("entt") then
             package:add("deps", "entt 3.10.1")
         end
-        package:add(build_config(package))
+        for key, values in pairs(build_config(package)) do
+            package:add(key, table.unpack(values))
+        end
     end)
 
     on_fetch(function (package)
