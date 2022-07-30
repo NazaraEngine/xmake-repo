@@ -11,6 +11,8 @@ package("nazaraengine")
     add_deps("libvorbis", { private = true, configs = { with_vorbisenc = false } })
     add_deps("openal-soft", { private = true, configs = { shared = true }})
 
+    add_configs("shared", {description = "Download shared binaries.", default = true, type = "boolean", readonly = true})
+
     add_configs("audio",         {description = "Includes the audio module", default = true, type = "boolean"})
     add_configs("graphics",      {description = "Includes the graphics module", default = true, type = "boolean"})
     add_configs("network",       {description = "Includes the network module", default = true, type = "boolean"})
