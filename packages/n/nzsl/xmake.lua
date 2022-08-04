@@ -10,8 +10,8 @@ package("nzsl")
 	add_deps("nazarautils", "fmt")
 	add_deps("frozen", "ordered_map", { private = true })
 
-	add_configs("with_symbols", {description = "Enable debug symbols in release", default = false, type = "boolean"})
 	add_configs("with_nzslc", {description = "Includes standalone compiler", default = true, type = "boolean"})
+	add_configs("with_symbols", {description = "Enable debug symbols in release", default = false, type = "boolean"})
 	if is_plat("windows", "linux", "mingw", "macosx", "bsd") then
 		add_configs("fs_watcher", {description = "Includes filesystem watcher", default = true, type = "boolean"})
 	end
@@ -32,8 +32,8 @@ package("nzsl")
 	on_install(function (package)
 		local configs = {}
 		configs.fs_watcher = package:config("fs_watcher") or false
-		configs.with_nzslc = package:config("with_nzslc") or false
 		configs.erronwarn = false
+		configs.with_nzslc = package:config("with_nzslc") or false
 		if package:is_debug() then
 			configs.mode = "debug"
 		elseif package:config("with_symbols") then
