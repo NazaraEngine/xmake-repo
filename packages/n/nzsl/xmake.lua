@@ -14,6 +14,9 @@ package("nzsl")
 	add_configs("with_symbols", {description = "Enable debug symbols in release", default = false, type = "boolean"})
 	if is_plat("windows", "linux", "mingw", "macosx", "bsd") then
 		add_configs("fs_watcher", {description = "Includes filesystem watcher", default = true, type = "boolean"})
+	elseif is_plat("wasm") then
+		-- shared build for wasm is currently unsupported due to a fmt link error
+		add_configs("shared", {description = "Build shared library.", default = false, type = "boolean", readonly = true})
 	end
 
 	on_load(function (package)
