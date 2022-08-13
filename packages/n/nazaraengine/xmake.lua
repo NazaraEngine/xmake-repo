@@ -11,7 +11,7 @@ package("nazaraengine")
     add_deps("libvorbis", { private = true, configs = { with_vorbisenc = false } })
     add_deps("openal-soft", { private = true, configs = { shared = true }})
 
-    add_configs("shared", {description = "Download shared binaries.", default = true, type = "boolean", readonly = true})
+    add_configs("shared", {description = "Build shared library.", default = true, type = "boolean", readonly = true})
 
     add_configs("audio",         {description = "Includes the audio module", default = true, type = "boolean"})
     add_configs("graphics",      {description = "Includes the graphics module", default = true, type = "boolean"})
@@ -21,7 +21,7 @@ package("nazaraengine")
     add_configs("platform",      {description = "Includes the platform module", default = true, type = "boolean"})
     add_configs("renderer",      {description = "Includes the renderer module", default = true, type = "boolean"})
     add_configs("utility",       {description = "Includes the utility module", default = true, type = "boolean"})
-    add_configs("widget",        {description = "Includes the widget module", default = true, type = "boolean"})
+    add_configs("widgets",       {description = "Includes the widgets module", default = true, type = "boolean"})
     add_configs("plugin-assimp", {description = "Includes the assimp plugin", default = false, type = "boolean"})
     add_configs("plugin-ffmpeg", {description = "Includes the ffmpeg plugin", default = false, type = "boolean"})
     add_configs("entt",          {description = "Includes EnTT to use components and systems", default = true, type = "boolean"})
@@ -63,8 +63,8 @@ package("nazaraengine")
         return package:config("utility") or has_platform(package)
     end
 
-    local function has_widget(package)
-        return package:config("widget")
+    local function has_widgets(package)
+        return package:config("widgets")
     end
 
     local function has_assimp_plugin(package)
@@ -107,8 +107,8 @@ package("nazaraengine")
             table.insert(links, prefix .. "Physics3D" .. suffix)
         end
 
-        if has_widget(package) then
-            table.insert(links, prefix .. "Widget" .. suffix)
+        if has_widgets(package) then
+            table.insert(links, prefix .. "Widgets" .. suffix)
         end
 
         if has_graphics(package) then
