@@ -4,7 +4,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2022.07.28", "c6851d93c2f255801545d8cf707ade3b16c205db")
+    add_versions("2022.08.21", "507a4f16be209c87fc27cdcda328b4e2ea2fb2fb")
 
     add_deps("nazarautils")
     add_deps("chipmunk2d", "dr_wav", "efsw", "fmt", "frozen", "kiwisolver", "libflac", "libsdl", "minimp3", "ordered_map", "stb", { private = true })
