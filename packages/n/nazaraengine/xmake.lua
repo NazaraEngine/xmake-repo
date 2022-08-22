@@ -142,7 +142,7 @@ package("nazaraengine")
     end
 
     on_load(function (package)
-        package:add("deps", "nzsl", { debug = package:debug(), configs = { with_symbols = package:config("with_symbols"), shared = true } })
+        package:add("deps", "nzsl", { debug = package:debug(), configs = { with_symbols = package:config("with_symbols") or package:debug(), shared = true } })
         package:add("deps", "freetype", { private = true, configs = { bzip2 = true, png = true, woff2 = true, zlib = true, debug = package:debug() } })
         package:add("deps", "newtondynamics", { private = true, debug = is_plat("windows") and package:debug() })
         if package:config("entt") then
