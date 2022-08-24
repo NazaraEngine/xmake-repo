@@ -4,7 +4,8 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2022.08.21", "507a4f16be209c87fc27cdcda328b4e2ea2fb2fb")
+    add_versions("2022.08.24", "5d8ecd11dfa50939835c94b48c3efd6f9dc34387")
+    add_versions("2022.08.24-skinning", "cd5a6699d9445e99601b65e470c884bbda53e7b6")
 
     add_deps("nazarautils")
     add_deps("chipmunk2d", "dr_wav", "efsw", "fmt", "frozen", "kiwisolver", "libflac", "libsdl", "minimp3", "ordered_map", "stb", { private = true })
@@ -144,7 +145,7 @@ package("nazaraengine")
     on_load(function (package)
         package:add("deps", "nzsl", { debug = package:debug(), configs = { with_symbols = package:config("with_symbols") or package:debug(), shared = true } })
         package:add("deps", "freetype", { private = true, configs = { bzip2 = true, png = true, woff2 = true, zlib = true, debug = package:debug() } })
-        package:add("deps", "newtondynamics", { private = true, debug = is_plat("windows") and package:debug() })
+        package:add("deps", "newtondynamics3", { private = true, debug = is_plat("windows") and package:debug() })
         if package:config("entt") then
             package:add("deps", "entt 3.10.1")
         end
