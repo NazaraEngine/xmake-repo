@@ -91,6 +91,10 @@ package("nazaraengine")
             table.insert(defines, "NAZARA_STATIC")
         end
 
+        if package:debug() then
+            table.insert(defines, "NAZARA_DEBUG")
+        end
+
         if has_audio(package) then
             table.insert(links, prefix .. "Audio" .. suffix)
         end
