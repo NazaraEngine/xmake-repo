@@ -1,6 +1,8 @@
 package("nazaraengine")
     set_homepage("https://github.com/NazaraEngine/NazaraEngine")
     set_description("Nazara Engine is a cross-platform framework aimed at (but not limited to) real-time applications requiring audio, 2D and 3D rendering, network and more (such as video games).")
+    set_license("MIT")
+    set_policy("package.librarydeps.strict_compatibility", true)
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
