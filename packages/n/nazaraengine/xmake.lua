@@ -24,8 +24,8 @@ package("nazaraengine")
     add_configs("renderer",      {description = "Includes the renderer module", default = true, type = "boolean"})
     add_configs("utility",       {description = "Includes the utility module", default = true, type = "boolean"})
     add_configs("widgets",       {description = "Includes the widgets module", default = true, type = "boolean"})
-    add_configs("plugin-assimp", {description = "Includes the assimp plugin", default = false, type = "boolean"})
-    add_configs("plugin-ffmpeg", {description = "Includes the ffmpeg plugin", default = false, type = "boolean"})
+    add_configs("plugin_assimp", {description = "Includes the assimp plugin", default = false, type = "boolean"})
+    add_configs("plugin_ffmpeg", {description = "Includes the ffmpeg plugin", default = false, type = "boolean"})
     add_configs("entt",          {description = "Includes EnTT to use components and systems", default = true, type = "boolean"})
     add_configs("with_symbols",  {description = "Enable debug symbols in release", default = false, type = "boolean"})
 
@@ -70,11 +70,11 @@ package("nazaraengine")
     end
 
     local function has_assimp_plugin(package)
-        return package:config("plugin-assimp")
+        return package:config("plugin_assimp")
     end
 
     local function has_ffmpeg_plugin(package)
-        return package:config("plugin-ffmpeg")
+        return package:config("plugin_ffmpeg")
     end
 
     local function build_config(package)
@@ -154,6 +154,12 @@ package("nazaraengine")
         if package:config("entt") then
             package:add("deps", "entt 3.10.1")
         end
+        if has_assimp_plugin(package) then
+            package:add("deps", "assimp v5.2.3")
+        end
+        if has_ffmpeg_plugin(package) then
+            package:add("deps", "ffmpeg", { configs = { shared = true }})
+        end
         for key, values in pairs(build_config(package)) do
             package:add(key, table.unpack(values))
         end
@@ -179,8 +185,8 @@ package("nazaraengine")
 
     on_install("windows", "mingw", "linux", "macosx", function (package)
         local configs = {}
-        configs.assimp = package:config("plugin-assimp")
-        configs.ffmpeg = package:config("plugin-ffmpeg")
+        configs.assimp = package:config("plugin_assimp")
+        configs.ffmpeg = package:config("plugin_ffmpeg")
         configs.examples = false
         configs.override_runtime = false
 
