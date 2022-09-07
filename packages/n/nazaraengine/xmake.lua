@@ -155,10 +155,10 @@ package("nazaraengine")
             package:add("deps", "entt 3.10.1")
         end
         if has_assimp_plugin(package) then
-            package:add("deps", "assimp v5.2.3")
+            package:add("deps", "assimp v5.2.3", { private = true })
         end
         if has_ffmpeg_plugin(package) then
-            package:add("deps", "ffmpeg", { configs = { shared = true }})
+            package:add("deps", "ffmpeg", { private = true, configs = { shared = true }})
         end
         for key, values in pairs(build_config(package)) do
             package:add(key, table.unpack(values))
