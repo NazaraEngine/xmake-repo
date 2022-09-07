@@ -2,11 +2,11 @@ package("nzsl")
     set_homepage("https://github.com/NazaraEngine/ShaderLang")
     set_description("NZSL is a shader language inspired by Rust and C++ which compiles to GLSL or SPIRV")
     set_license("MIT")
-    set_policy("package.librarydeps.strict_compatibility", true)
+    set_policy("package.strict_compatibility", true)
 
     add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-    add_versions("2022.08.14+1", "8f3ad4959025c6b249beab94f0a138c398d46726")
+    add_versions("2022.09.07", "6b12ec91e5d133fa31d6ea73d02325d797958965")
 
     add_deps("nazarautils", "fmt")
     add_deps("frozen", "ordered_map", { private = true })
@@ -37,6 +37,7 @@ package("nzsl")
         local configs = {}
         configs.fs_watcher = package:config("fs_watcher") or false
         configs.erronwarn = false
+        configs.examples = false
         configs.with_nzslc = package:config("with_nzslc") or false
         if package:is_debug() then
             configs.mode = "debug"
