@@ -1,5 +1,7 @@
 -- Compile shaders to includables headers
 rule("compile.shaders")
+	set_extensions(".nzsl", ".nzslb")
+
 	before_buildcmd_file(function (target, batchcmds, shaderfile, opt)
 		import("core.tool.toolchain")
 
