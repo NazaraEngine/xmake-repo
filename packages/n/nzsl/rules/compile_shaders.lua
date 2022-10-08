@@ -3,12 +3,13 @@ rule("compile.shaders")
 	set_extensions(".nzsl", ".nzslb")
 
 	before_buildcmd_file(function (target, batchcmds, shaderfile, opt)
+		import("core.project.project")
 		import("core.tool.toolchain")
 
-		local nzsl = path.join(target:pkg("nzsl"):installdir(), "bin", "nzslc")
+		local nzsl = path.join(project.required_package("nzsl"):installdir(), "bin", "nzslc")
 
 		-- add commands
-		batchcmds:show_progress(opt.progress, "${color.build.object}compiling shader %s", shaderfile)
+		batchcmds:show_progress(opt.progress, "${color.build.object}compiling.shader %s", shaderfile)
 		local argv = { "--compile=nzslb-header", "--partial", "--optimize" }
 
 		-- handle --log-format
@@ -19,6 +20,7 @@ rule("compile.shaders")
 
 		table.insert(argv, shaderfile)
 
+		-- on mingw we need run envs because of .dll dependencies which may be not part of the PATH
 		local envs
 		if is_plat("mingw") then
 			local mingw = toolchain.load("mingw")
