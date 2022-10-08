@@ -6,6 +6,7 @@ rule("compile.shaders")
 		import("core.project.project")
 		import("core.tool.toolchain")
 
+		-- warning: project.required_package is not a stable interface, this may break in the future
 		local nzsl = path.join(project.required_package("nzsl"):installdir(), "bin", "nzslc")
 
 		-- add commands
