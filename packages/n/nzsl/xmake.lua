@@ -53,25 +53,27 @@ package("nzsl")
         if package:config("with_nzslc") and not package:is_cross() then
             os.vrun("nzslc --version")
         end
-        assert(package:check_cxxsnippets({test = [[
-            void test() {
-                nzsl::Ast::ModulePtr shaderModule = nzsl::Parse(R"(
-                    [nzsl_version("1.0")]
-                    module;
+        if not package:is_binary() then
+            assert(package:check_cxxsnippets({test = [[
+                void test() {
+                    nzsl::Ast::ModulePtr shaderModule = nzsl::Parse(R"(
+                        [nzsl_version("1.0")]
+                        module;
 
-                    struct FragOut
-                    {
-                        value: vec4[f32]
-                    }
+                        struct FragOut
+                        {
+                            value: vec4[f32]
+                        }
 
-                    [entry(frag)]
-                    fn main() -> FragOut
-                    {
-                        let output: FragOut;
-                        output.value = vec4[f32](0.0, 0.0, 1.0, 1.0);
-                        return output;
-                    }
-                )");
-            }
-        ]]}, {configs = {languages = "c++17"}, includes = "NZSL/Parser.hpp"}))
+                        [entry(frag)]
+                        fn main() -> FragOut
+                        {
+                            let output: FragOut;
+                            output.value = vec4[f32](0.0, 0.0, 1.0, 1.0);
+                            return output;
+                        }
+                    )");
+                }
+            ]]}, {configs = {languages = "c++17"}, includes = "NZSL/Parser.hpp"}))
+        end
     end)
