@@ -2,8 +2,7 @@ name: MingW (MacOS)
 
 on:
   pull_request:
-    branches:
-      - dev
+  push:
 
 jobs:
   build:
@@ -22,6 +21,7 @@ jobs:
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: branch@dev
+          actions-cache-folder: '.xmake-cache'
 
       - name: Prepare
         run: |

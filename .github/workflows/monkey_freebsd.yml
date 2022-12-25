@@ -1,12 +1,11 @@
-name: FreeBSD
+name: Monkey (FreeBSD)
 
 on:
-  pull_request:
-  push:
+  schedule: # execute every 24 hours
+    - cron: "0 */24 * * *"
 
 jobs:
   build:
-
     strategy:
       matrix:
         os: [macOS-12]
@@ -14,9 +13,6 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
-    concurrency:
-        group: ${{ github.ref }}-${{ github.base_ref }}-${{ github.head_ref }}-FreeBSD-${{ matrix.kind }}
-        cancel-in-progress: true
     steps:
       - uses: actions/checkout@v1
 
@@ -24,10 +20,9 @@ jobs:
         uses: vmactions/freebsd-vm@v0
         with:
           usesh: true
-          sync: sshfs
           mem: 4096
           copyback: false
-          prepare: pkg install -y git curl unzip gmake llvm gsed bash perl5 openssl
+          prepare: pkg install -y git curl unzip gmake llvm gsed bash perl5
           run: |
             git clone --recurse-submodules https://github.com/xmake-io/xmake.git /tmp/xmake -b dev
             cd /tmp/xmake
@@ -35,8 +30,8 @@ jobs:
             gmake -j4
             gmake install
             export XMAKE_ROOT=y
-            cd -
-            git config --global --add safe.directory /Users/runner/work/xmake-repo/xmake-repo
-            xmake l ./scripts/test.lua -D -k ${{ matrix.kind }} -vD
+            git clone https://github.com/xmake-io/xmake-repo.git /tmp/xmake-repo -b dev --depth 2
+            cd /tmp/xmake-repo
+            xmake l ./scripts/monkey.lua -D -k ${{ matrix.kind }}
 
 

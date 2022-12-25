@@ -21,6 +21,7 @@ jobs:
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: branch@dev
+          actions-cache-folder: '.xmake-cache'
 
       - name: Installation
         run: |

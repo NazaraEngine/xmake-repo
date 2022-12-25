@@ -1,8 +1,8 @@
-name: Linux
+name: Monkey (Linux)
 
 on:
-  pull_request:
-  push:
+  schedule: # execute every 24 hours
+    - cron: "0 */24 * * *"
 
 jobs:
   build:
@@ -13,20 +13,15 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
-    concurrency:
-        group: ${{ github.ref }}-${{ github.base_ref }}-${{ github.head_ref }}-Linux-${{ matrix.kind }}
-        cancel-in-progress: true
     steps:
       - uses: actions/checkout@v1
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: branch@dev
-          actions-cache-folder: '.xmake-cache'
 
       - name: Installation
         run: |
           # TODO we will remove it later
-          sudo apt-get update
           sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 60
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60
@@ -37,4 +32,5 @@ jobs:
 
       - name: Tests
         run: |
-          xmake l ./scripts/test.lua -D -k ${{ matrix.kind }}
+          xmake l ./scripts/monkey.lua -D -k ${{ matrix.kind }}
+
