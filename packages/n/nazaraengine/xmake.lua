@@ -17,7 +17,7 @@ package("nazaraengine")
     add_configs("shared", {description = "Build shared library.", default = true, type = "boolean", readonly = true})
 
     -- all modules have their own config
-    add_configs("plugin_assimp", {description = "Includes the assimp plugin", default = false, type = "boolean"})
+    add_configs("plugin_assimp", {description = "Includes the assimp plugin", default = true, type = "boolean"})
     add_configs("plugin_ffmpeg", {description = "Includes the ffmpeg plugin", default = false, type = "boolean"})
     add_configs("entt",          {description = "Includes EnTT to use components and systems", default = true, type = "boolean"})
     add_configs("with_symbols",  {description = "Enable debug symbols in release", default = false, type = "boolean"})
@@ -124,6 +124,7 @@ package("nazaraengine")
         configs.assimp = package:config("plugin_assimp")
         configs.ffmpeg = package:config("plugin_ffmpeg")
         configs.examples = false
+        configs.tests = false
         configs.override_runtime = false
 
         if not package:config("shared") then
