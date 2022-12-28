@@ -122,7 +122,6 @@ function main(...)
     local packages = {}
     local files = os.files(path.join(os.scriptdir(), "..", "packages", "*", "*", "xmake.lua"))
     for _, file in ipairs(files) do
-        local file = files[math.random(#files)]
         if file:find("packages", 1, true) and path.filename(file) == "xmake.lua" then
             assert(file == file:lower(), "%s must be lower case!", file)
             local package = path.filename(path.directory(file))
