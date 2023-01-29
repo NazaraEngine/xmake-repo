@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2023.01.28", "d27ca559431c818945d9455ab97b5ffc5af24127")
+    add_versions("2023.01.29", "4a91f3d470dbce8a85dce8e4eb0996f45f429b02")
 
     add_deps("nazarautils")
     add_deps("chipmunk2d", "dr_wav", "efsw", "fmt", "frozen", "kiwisolver", "libflac", "libsdl", "minimp3", "ordered_map", "stb", { private = true })
@@ -109,7 +109,8 @@ package("nazaraengine")
         package:add("deps", "freetype", { private = true, configs = { bzip2 = true, png = true, woff2 = true, zlib = true, debug = package:debug() } })
         package:add("deps", "newtondynamics3", { private = true, debug = is_plat("windows") and package:debug() })
         if package:config("entt") then
-            package:add("deps", "entt 3.10.1")
+            package:add("defines", "NAZARA_ENTT")
+            package:add("deps", "entt 3.11.1")
         end
         if package:config("plugin_assimp") then
             package:add("deps", "assimp v5.2.3", { private = true })
