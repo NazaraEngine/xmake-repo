@@ -6,10 +6,10 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2023.01.29", "4a91f3d470dbce8a85dce8e4eb0996f45f429b02")
+    add_versions("2023.01.29", "896aeb2c4acdb46f7387484ff75997e5043cd3a6")
 
     add_deps("nazarautils")
-    add_deps("chipmunk2d", "dr_wav", "efsw", "fmt", "frozen", "kiwisolver", "libflac", "libsdl", "minimp3", "ordered_map", "stb", { private = true })
+    add_deps("chipmunk2d", "dr_wav", "efsw", "fmt", "frozen", "kiwisolver", "libflac", "libsdl >=2.26.0", "minimp3", "ordered_map", "stb", { private = true })
     add_deps("libvorbis", { private = true, configs = { with_vorbisenc = false } })
     add_deps("openal-soft", { private = true, configs = { shared = true }})
 
