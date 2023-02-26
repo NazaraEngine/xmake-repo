@@ -9,14 +9,11 @@ package("nazaraengine")
     add_versions("2023.02.26", "eabd9bceceadc21ebc9fa63a865e515684e5c59e")
 
     add_deps("nazarautils")
-    add_deps("chipmunk2d", "dr_wav", "efsw", "fmt", "frozen", "kiwisolver", "libflac", "libsdl >=2.26.0", "minimp3", "ordered_map", "stb", { private = true })
-    add_deps("libvorbis", { private = true, configs = { with_vorbisenc = false } })
-    add_deps("openal-soft", { private = true, configs = { shared = true }})
 
     -- static compilation is not supported for now
-    add_configs("shared", {description = "Build shared library.", default = true, type = "boolean", readonly = true})
+    add_configs("shared", {description = "Build shared library.", default = not is_plat("wasm"), type = "boolean", readonly = true})
 
-    -- all modules have their own config
+    -- all modules and plugins have their own config
     add_configs("plugin_assimp", {description = "Includes the assimp plugin", default = true, type = "boolean"})
     add_configs("plugin_ffmpeg", {description = "Includes the ffmpeg plugin", default = false, type = "boolean"})
     add_configs("entt",          {description = "Includes EnTT to use components and systems", default = true, type = "boolean"})
@@ -106,21 +103,13 @@ package("nazaraengine")
         end
 
         package:add("deps", "nzsl", { debug = package:debug(), configs = { with_symbols = package:config("with_symbols") or package:debug(), shared = true } })
-        package:add("deps", "freetype", { private = true, configs = { bzip2 = true, png = true, woff2 = true, zlib = true, debug = package:debug() } })
-        package:add("deps", "newtondynamics3", { private = true, debug = is_plat("windows") and package:debug() })
         if package:config("entt") then
             package:add("defines", "NAZARA_ENTT")
             package:add("deps", "entt 3.11.1")
         end
-        if package:config("plugin_assimp") then
-            package:add("deps", "assimp v5.2.3", { private = true })
-        end
-        if package:config("plugin_ffmpeg") then
-            package:add("deps", "ffmpeg", { private = true, configs = { shared = true }})
-        end
     end)
 
-    on_install("windows", "mingw", "linux", "macosx", function (package)
+    on_install("windows|x86", "windows|x64", "mingw", "linux", "macosx", "bsd", "wasm", function (package)
         local configs = {}
         configs.assimp = package:config("plugin_assimp")
         configs.ffmpeg = package:config("plugin_ffmpeg")
