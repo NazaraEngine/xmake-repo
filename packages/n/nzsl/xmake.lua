@@ -6,7 +6,7 @@ package("nzsl")
 
     add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-    add_versions("2023.03.04", "79456919ea332aa8c41559c10c18a19cd866d51c")
+    add_versions("2023.03.19", "0608f3dec001066a0c6de99bc3d6a7464820cca2")
 
     add_deps("nazarautils", "fmt")
     add_deps("frozen", "ordered_map", { private = true })
@@ -27,9 +27,6 @@ package("nzsl")
         end
         if package:config("fs_watcher") then
             package:add("deps", "efsw")
-        end
-        if package:config("with_nzslc") then
-            package:add("deps", "nlohmann_json", { private = true })
         end
     end)
 
