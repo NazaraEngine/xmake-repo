@@ -7,7 +7,7 @@ package("nazarautils")
 
     add_urls("https://github.com/NazaraEngine/NazaraUtils.git")
 
-    add_versions("2023.03.12", "1d2ccaf1409e1372c50b4be548518c84ab383708")
+    add_versions("2023.03.19", "9c40416a7b4798b93752622f9bf0800df96cffd0")
 
     on_install(function (package)
         import("package.tools.xmake").install(package)
@@ -20,5 +20,5 @@ package("nazarautils")
                 bitset.UnboundedSet(42);
                 bitset.Reverse();
             }
-        ]]}, {configs = {languages = "c++17"}, includes = "Nazara/Utils/Bitset.hpp"}))
+        ]]}, {configs = {languages = "c++17"}, includes = "NazaraUtils/Bitset.hpp"}))
     end)
