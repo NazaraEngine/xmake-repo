@@ -63,7 +63,7 @@ package("nzsl")
                         }
 
                         [entry(frag)]
-                        fn main() -> FragOut
+                        fn fragShader() -> FragOut
                         {
                             let output: FragOut;
                             output.value = vec4[f32](0.0, 0.0, 1.0, 1.0);
