@@ -119,14 +119,22 @@ function main(...)
     local argv = option.parse({...}, options, "Test all the given or changed packages.")
 
     -- get packages
-    local packages = {}
-    local files = os.files(path.join(os.scriptdir(), "..", "packages", "*", "*", "xmake.lua"))
-    for _, file in ipairs(files) do
-        if file:find("packages", 1, true) and path.filename(file) == "xmake.lua" then
-            assert(file == file:lower(), "%s must be lower case!", file)
-            local package = path.filename(path.directory(file))
-            table.insert(packages, package)
+    math.randomseed(os.time())
+    local packages = argv.packages or {}
+    if #packages == 0 then
+        local files = os.files(path.join(os.scriptdir(), "..", "packages", "*", "*", "xmake.lua"))
+        local limit = is_host("bsd") and 1 or 10
+        while #packages < limit do
+            local file = files[math.random(#files)]
+            if file:find("packages", 1, true) and path.filename(file) == "xmake.lua" then
+                assert(file == file:lower(), "%s must be lower case!", file)
+                local package = path.filename(path.directory(file))
+                table.insert(packages, package)
+            end
         end
+    end
+    if #packages == 0 then
+        table.insert(packages, "tbox dev")
     end
 
     -- remove unsupported packages

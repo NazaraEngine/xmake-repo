@@ -15,6 +15,9 @@ local options =
 ,   {'m', "mode",       "kv", nil, "Set the given mode."                        }
 ,   {'j', "jobs",       "kv", nil, "Set the build jobs."                        }
 ,   {'f', "configs",    "kv", nil, "Set the configs."                           }
+,   {'d', "debugdir",   "kv", nil, "Set the debug source directory."            }
+,   {nil, "fetch",      "k",  nil, "Fetch package only."                        }
+,   {nil, "precompiled","k",  nil, "Attemp to install the precompiled package." }
 ,   {nil, "linkjobs",   "kv", nil, "Set the link jobs."                         }
 ,   {nil, "cflags",     "kv", nil, "Set the cflags."                            }
 ,   {nil, "cxxflags",   "kv", nil, "Set the cxxflags."                          }
@@ -87,14 +90,22 @@ function _require_packages(argv, packages)
         table.insert(config_argv, "--ldflags=" .. argv.ldflags)
     end
     os.vexecv("xmake", config_argv)
-    local require_argv = {"require", "-f", "-y", "--build"}
+    local require_argv = {"require", "-f", "-y"}
+    if not argv.precompiled then
+        table.insert(require_argv, "--build")
+    end
     if argv.verbose then
         table.insert(require_argv, "-v")
     end
     if argv.diagnosis then
         table.insert(require_argv, "-D")
     end
-    if argv.shallow then
+    local is_debug = false
+    if argv.debugdir then
+        is_debug = true
+        table.insert(require_argv, "--debugdir=" .. argv.debugdir)
+    end
+    if argv.shallow or is_debug then
         table.insert(require_argv, "--shallow")
     end
     if argv.jobs then
@@ -103,14 +114,17 @@ function _require_packages(argv, packages)
     if argv.linkjobs then
         table.insert(require_argv, "--linkjobs=" .. argv.linkjobs)
     end
+    if argv.fetch then
+        table.insert(require_argv, "--fetch")
+    end
     local extra = {}
     if argv.mode == "debug" then
         extra.debug = true
     end
-    if argv.kind == "shared" then
-        extra.configs = extra.configs or {}
-        extra.configs.shared = true
-    end
+    -- Some packages set shared=true as default, so we need to force set
+    -- shared=false to test static build.
+    extra.configs = extra.configs or {}
+    extra.configs.shared = argv.kind == "shared"
     local configs = argv.configs
     if configs then
         extra.system  = false
@@ -164,9 +178,9 @@ function main(...)
     if #packages == 0 then
         local files = os.iorun("git diff --name-only HEAD^")
         for _, file in ipairs(files:split('\n'), string.trim) do
-            if file:find("packages", 1, true) and path.filename(file) == "xmake.lua" then
+            if file:startswith("packages") then
                 assert(file == file:lower(), "%s must be lower case!", file)
-                local package = path.filename(path.directory(file))
+                local package = file:match("packages/%w/(%S+)/")
                 table.insert(packages, package)
             end
         end
