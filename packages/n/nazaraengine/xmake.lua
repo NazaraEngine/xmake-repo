@@ -109,14 +109,14 @@ package("nazaraengine")
         end
     end)
 
-    on_install("windows", "mingw", "linux", "macosx", "bsd", "wasm", function (package)
+    on_install("windows|x86", "windows|x64", "mingw", "linux", "macosx", "wasm", function (package)
         local configs = {}
         configs.assimp = package:config("plugin_assimp")
         configs.ffmpeg = package:config("plugin_ffmpeg")
         configs.examples = false
         configs.tests = false
         configs.override_runtime = false
-        configs.unitybuild = true
+        configs.unitybuild = not package:is_plat("mingw")
 
         if not package:config("shared") then
             configs.embed_rendererbackends = true
