@@ -24,4 +24,4 @@ jobs:
 
       - name: Tests
         run: |
-          xmake l ./scripts/test.lua -D -p iphoneos --packages=nazaraengine
+          xmake l ./scripts/test.lua -D -p iphoneos nazaraengine

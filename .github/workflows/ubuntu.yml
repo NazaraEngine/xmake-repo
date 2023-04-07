@@ -38,4 +38,4 @@ jobs:
 
       - name: Tests
         run: |
-          xmake l ./scripts/test.lua -D -k ${{ matrix.kind }} -m ${{ matrix.mode }} --packages=nazaraengine
+          xmake l ./scripts/test.lua -D -k ${{ matrix.kind }} -m ${{ matrix.mode }} nazaraengine

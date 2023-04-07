@@ -31,4 +31,4 @@ jobs:
 
       - name: Tests
         run: |
-          xmake l ./scripts/test.lua -D --toolchain=clang -k ${{ matrix.kind }} --packages=nazaraengine
+          xmake l ./scripts/test.lua -D --toolchain=clang -k ${{ matrix.kind }} nazaraengine
