@@ -36,6 +36,7 @@ package("nzsl")
         configs.erronwarn = false
         configs.examples = false
         configs.with_nzslc = package:config("with_nzslc") or false
+        configs.unitybuild = true
         if package:is_debug() then
             configs.mode = "debug"
         elseif package:config("with_symbols") then
