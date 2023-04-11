@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2023.04.06+1", "ec1efb5e562946ffee6b492c2792c41c0502f10f")
+    add_versions("2023.04.11", "3df52dcfbefb8bafa9c85530d5482bcc87c51958")
 
     add_deps("nazarautils")
 
@@ -14,45 +14,76 @@ package("nazaraengine")
     add_configs("shared", {description = "Build shared library.", default = not is_plat("wasm"), type = "boolean", readonly = true})
 
     -- all modules and plugins have their own config
-    add_configs("plugin_assimp", {description = "Includes the assimp plugin", default = true, type = "boolean"})
-    add_configs("plugin_ffmpeg", {description = "Includes the ffmpeg plugin", default = false, type = "boolean"})
-    add_configs("entt",          {description = "Includes EnTT to use components and systems", default = true, type = "boolean"})
-    add_configs("with_symbols",  {description = "Enable debug symbols in release", default = false, type = "boolean"})
+    add_configs("plugin_assimp",          {description = "Includes the assimp plugin", default = true, type = "boolean"})
+    add_configs("plugin_ffmpeg",          {description = "Includes the ffmpeg plugin", default = false, type = "boolean"})
+    add_configs("entt",                   {description = "Includes EnTT to use components and systems", default = true, type = "boolean"})
+    add_configs("with_symbols",           {description = "Enable debug symbols in release", default = false, type = "boolean"})
+    if not is_plat("wasm") then
+        add_configs("embed_rendererbackends", {description = "Embed renderer backend code into NazaraRenderer instead of loading them dynamically", default = false, type = "boolean"})
+        add_configs("embed_plugins",          {description = "Embed enabled plugins code as static libraries", default = false, type = "boolean"})
+        add_configs("link_openal",            {description = "Link OpenAL in the executable instead of dynamically loading it", default = false, type = "boolean"})
+    end
 
     local components = {
-        { 
+        audio = {
+            option = "audio",
             name = "Audio",
-            deps = { "core" }
-        },
-        {
-            name = "Core",
+            deps = { "core" },
             custom = function (package, component)
-                if package:is_plat("linux") then
-                    component:add("syslinks", "pthread", "dl")
+                if package:is_plat("wasm") then
+                    component:add("syslinks", "openal")
                 end
             end
         },
-        { 
+        bulletphysics3d = {
+            option = "bulletphysics",
+            name = "BulletPhysics3D",
+            deps = { "core" }
+        },
+        chipmunkphysics2d = {
+            option = "chipmunkphysics",
+            name = "ChipmunkPhysics2D",
+            deps = { "core" }
+        },
+        core = {
+            name = "Core",
+            custom = function (package, component)
+                if package:is_plat("windows", "mingw") then
+                    component:add("syslinks", "ole32")
+                elseif package:is_plat("linux") then
+                    component:add("syslinks", "pthread", "dl")
+                elseif package:is_plat("android") then
+                    component:add("syslinks", "log")
+                end
+            end
+        },
+        graphics = { 
+            option = "graphics",
             name = "Graphics",
             deps = { "renderer" }
         },
-        { 
+        joltphysics3d = {
+            option = "joltphysics",
+            name = "JoltPhysics3D",
+            deps = { "core" }
+        },
+        network = {
+            option = "network",
             name = "Network",
-            deps = { "core" }
+            deps = { "core" },
+            custom = function (package, component)
+                if package:is_plat("windows", "mingw") then
+                    component:add("syslinks", "ws2_32")
+                end
+            end
         },
-        { 
-            name = "Physics2D",
-            deps = { "core" }
-        },
-        { 
-            name = "Physics3D",
-            deps = { "core" }
-        },
-        { 
+        platform = {
+            option = "platform",
             name = "Platform",
             deps = { "utility" }
         },
-        { 
+        renderer = {
+            option = "renderer",
             name = "Renderer",
             deps = { "platform", "utility" },
             custom = function (package, component)
@@ -61,40 +92,56 @@ package("nazaraengine")
                 end
             end
         },
-        { 
+        utility = {
+            option = "utility",
             name = "Utility",
             deps = { "core" }
         },
-        { 
+        widgets = {
+            option = "widgets",
             name = "Widgets",
             deps = { "graphics" }
-        },
+        }
     }
 
-    for _, comp in ipairs(components) do
-        local componentName = comp.name:lower()
-        add_configs(componentName, { description = "Includes the " .. comp.name .. " module", default = true, type = "boolean" })
+    local function build_deps(component, deplist, inner)
+        if component.deps then
+            for _, depname in ipairs(component.deps) do
+                table.insert(deplist, depname)
+                build_deps(components[depname], deplist, true)
+            end
+        end
+    end
 
-        on_component(componentName, function (package, component)
+    for name, compdata in table.orderpairs(components) do
+        local deplist = {}
+        build_deps(compdata, deplist)
+        compdata.deplist = table.unique(deplist)
+
+        if compdata.option then
+            local depstring = #deplist > 0 and " (depends on " .. table.concat(compdata.deplist, ", ") .. ")" or ""
+            add_configs(compdata.option, { description = "Compiles the " .. compdata.name .. " module" .. depstring, default = true, type = "boolean" })
+        end
+
+        on_component(name, function (package, component)
             local prefix = "Nazara"
             local suffix = package:config("shared") and "" or "-s"
             if package:debug() then
                 suffix = suffix .. "-d"
             end
 
-            component:add("deps", table.unwrap(comp.deps))
-            component:add("links", prefix .. comp.name .. suffix)
-            if comp.custom then
-                comp.custom(package, component)
+            component:add("deps", table.unwrap(compdata.deps))
+            component:add("links", prefix .. compdata.name .. suffix)
+            if compdata.custom then
+                compdata.custom(package, component)
             end
         end)
     end
 
     on_load(function (package)
-        for _, comp in ipairs(components) do
-            local componentName = comp.name:lower()
-            if package:config(componentName) then
-                package:add("components", componentName)
+        for name, compdata in table.orderpairs(components) do
+            if not compdata.option or package:config(compdata.option) then
+                package:add("components", name)
             end
         end
 
@@ -109,17 +156,41 @@ package("nazaraengine")
         end
     end)
 
-    on_install("windows|x86", "windows|x64", "mingw", "linux", "macosx", "wasm", function (package)
+    on_install("windows", "mingw", "linux", "macosx", "wasm", function (package)
         local configs = {}
-        configs.assimp = package:config("plugin_assimp")
-        configs.ffmpeg = package:config("plugin_ffmpeg")
         configs.examples = false
         configs.tests = false
         configs.override_runtime = false
         configs.unitybuild = not package:is_plat("mingw")
 
-        if not package:config("shared") then
+        configs.assimp = package:config("plugin_assimp")
+        configs.ffmpeg = package:config("plugin_ffmpeg")
+
+        for name, compdata in table.orderpairs(components) do
+            if compdata.option then
+                if package:config(compdata.option) then
+                    for _, dep in ipairs(compdata.deplist) do
+                        local depcomp = components[dep]
+                        if depcomp.option and not package:config(depcomp.option) then
+                            raise("module \"" .. name .. "\" depends on disabled module \"" .. dep .. "\"")
+                        end
+                    end
+
+                    configs[compdata.option] = true
+                else
+                    configs[compdata.option] = false
+                end
+            end
+        end
+
+        if not package:is_plat("wasm") then
+            configs.embed_rendererbackends = package:config("embed_rendererbackends")
+            configs.embed_plugins = package:config("embed_plugins")
+            configs.link_openal = package:config("link_openal")
+        else
             configs.embed_rendererbackends = true
+            configs.embed_plugins = true
+            configs.link_openal = true
         end
 
         if package:is_debug() then
@@ -133,13 +204,13 @@ package("nazaraengine")
     end)
 
     on_test(function (package)
-        for _, comp in ipairs(components) do
-            if package:config(comp.name:lower()) then
+        for name, compdata in table.orderpairs(components) do
+            if not compdata.option or package:config(compdata.option) then
                 assert(package:check_cxxsnippets({test = [[
                     void test() {
-                        Nz::Modules<Nz::]] .. comp.name .. [[> nazara;
+                        Nz::Modules<Nz::]] .. compdata.name .. [[> nazara;
                     }
-                ]]}, {configs = {languages = "c++17"}, includes = "Nazara/" .. comp.name .. ".hpp"}))
+                ]]}, {configs = {languages = "c++17"}, includes = "Nazara/" .. compdata.name .. ".hpp"}))
             end
         end
     end)
