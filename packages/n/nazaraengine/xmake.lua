@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2023.04.12", "cdb4ff2de9e5154f06c8bdf3b532e21075ef9c12")
+    add_versions("2023.04.13", "c21c131fb269821de7f5b9cccb96c96539937482")
 
     add_deps("nazarautils")
 
@@ -161,7 +161,9 @@ package("nazaraengine")
         configs.examples = false
         configs.tests = false
         configs.override_runtime = false
-        configs.unitybuild = not package:is_plat("mingw") and not os.getenv("XMAKE_IN_PROJECT_GENERATOR") -- fixes a xmake bug
+
+        -- enable unitybuild for faster compilation except on MinGW (doesn't like big object even with /bigobj)
+        configs.unitybuild = not package:is_plat("mingw")
 
         configs.assimp = package:config("plugin_assimp")
         configs.ffmpeg = package:config("plugin_ffmpeg")

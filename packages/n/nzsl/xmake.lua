@@ -6,7 +6,7 @@ package("nzsl")
 
     add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-    add_versions("2023.03.29", "fbe366c8ed6052cecba601f50a3215101df6895b")
+    add_versions("2023.04.13", "c21c131fb269821de7f5b9cccb96c96539937482")
 
     add_deps("nazarautils", "fmt")
     add_deps("frozen", "ordered_map", { private = true })
@@ -36,7 +36,9 @@ package("nzsl")
         configs.erronwarn = false
         configs.examples = false
         configs.with_nzslc = package:config("with_nzslc") or false
-        configs.unitybuild = not package:is_plat("mingw") and not os.getenv("XMAKE_IN_PROJECT_GENERATOR") -- fixes a xmake bug
+
+        -- enable unitybuild for faster compilation except on MinGW (doesn't like big object even with /bigobj)
+        configs.unitybuild = not package:is_plat("mingw")
 
         if package:is_debug() then
             configs.mode = "debug"
