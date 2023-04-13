@@ -161,6 +161,7 @@ package("nazaraengine")
         configs.examples = false
         configs.tests = false
         configs.override_runtime = false
+        configs.unitybuild = not package:is_plat("mingw") and not os.getenv("XMAKE_IN_PROJECT_GENERATOR") -- fixes a xmake bug
 
         configs.assimp = package:config("plugin_assimp")
         configs.ffmpeg = package:config("plugin_ffmpeg")

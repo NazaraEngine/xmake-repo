@@ -36,6 +36,7 @@ package("nzsl")
         configs.erronwarn = false
         configs.examples = false
         configs.with_nzslc = package:config("with_nzslc") or false
+        configs.unitybuild = not package:is_plat("mingw") and not os.getenv("XMAKE_IN_PROJECT_GENERATOR") -- fixes a xmake bug
 
         if package:is_debug() then
             configs.mode = "debug"
