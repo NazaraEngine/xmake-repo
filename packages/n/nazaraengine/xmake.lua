@@ -161,7 +161,6 @@ package("nazaraengine")
         configs.examples = false
         configs.tests = false
         configs.override_runtime = false
-        configs.unitybuild = not package:is_plat("mingw")
 
         configs.assimp = package:config("plugin_assimp")
         configs.ffmpeg = package:config("plugin_ffmpeg")
