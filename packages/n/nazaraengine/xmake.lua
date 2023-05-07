@@ -138,6 +138,48 @@ package("nazaraengine")
         end)
     end
 
+    on_fetch(function (package, opt)
+        local nazara = os.getenv("NAZARA_ENGINE_PATH")
+        if not nazara or not os.isdir(nazara) then
+            return
+        end
+
+        local mode
+        if package:is_debug() then
+            mode = "debug"
+        elseif package:config("with_symbols") then
+            mode = "releasedbg"
+        else
+            mode = "release"
+        end
+
+        local binFolder = string.format("%s_%s_%s", package:plat(), package:arch(), mode)
+        local fetchInfo = {
+            version = os.date("%Y.%m.%d"),
+            sysincludedirs = { path.join(nazara, "include") },
+            linkdirs = path.join(nazara, "bin", binFolder),
+            components = {}
+        }
+        local baseComponent = {}
+        fetchInfo.components.__base = baseComponent
+
+        if package:config("entt") then
+            fetchInfo.defines = "NAZARA_ENTT"
+        end
+        for name, component in pairs(package:components()) do
+            fetchInfo.components[name] = {
+                links = component:get("links"),
+                syslinks = component:get("syslinks")
+            }
+        end
+
+        baseComponent.defines = fetchInfo.defines
+        baseComponent.linkdirs = fetchInfo.linkdirs
+        baseComponent.sysincludedirs = fetchInfo.sysincludedirs
+        
+        return fetchInfo
+    end)
+
     on_load(function (package)
         for name, compdata in table.orderpairs(components) do
             if not compdata.option or package:config(compdata.option) then
