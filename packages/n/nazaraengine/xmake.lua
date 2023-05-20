@@ -176,7 +176,9 @@ package("nazaraengine")
         baseComponent.defines = fetchInfo.defines
         baseComponent.linkdirs = fetchInfo.linkdirs
         baseComponent.sysincludedirs = fetchInfo.sysincludedirs
-        
+
+        package:set("policy", "package.librarydeps.strict_compatibility", false)
+
         return fetchInfo
     end)
 
