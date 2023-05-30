@@ -7,7 +7,7 @@ package("nazarautils")
 
     add_urls("https://github.com/NazaraEngine/NazaraUtils.git")
 
-    add_versions("2023.05.30", "d99095c85e014023af75727a741aac4ed10de1a6")
+    add_versions("2023.05.30+1", "af5da072c9353b4c6aa9aaacf73921fcfcd2c566")
 
     on_install(function (package)
         import("package.tools.xmake").install(package)
