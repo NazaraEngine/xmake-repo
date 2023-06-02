@@ -153,9 +153,12 @@ package("nazaraengine")
             mode = "release"
         end
 
+        local versions = package:versions()
+        table.sort(versions, function (a, b) return a > b end)
+
         local binFolder = string.format("%s_%s_%s", package:plat(), package:arch(), mode)
         local fetchInfo = {
-            version = os.date("%Y.%m.%d"),
+            version = versions[1] or os.date("%Y.%m.%d"),
             sysincludedirs = { path.join(nazara, "include") },
             linkdirs = path.join(nazara, "bin", binFolder),
             components = {}
