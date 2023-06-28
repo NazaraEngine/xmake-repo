@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2023.06.24", "4494249dc1c19a1e42b9ac9462fdc7e2ae302718")
+    add_versions("2023.06.28", "c2caec39544e5e6ca66e6787e251f9b31baf3af8")
 
     add_deps("nazarautils")
 
@@ -199,7 +199,7 @@ package("nazaraengine")
         package:add("deps", "nzsl", { debug = package:debug(), configs = { with_symbols = package:config("with_symbols") or package:debug(), shared = true } })
         if package:config("entt") then
             package:add("defines", "NAZARA_ENTT")
-            package:add("deps", "entt 3.11.1")
+            package:add("deps", "entt 3.12.2")
         end
     end)
 
