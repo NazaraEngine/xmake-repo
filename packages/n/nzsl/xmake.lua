@@ -6,10 +6,9 @@ package("nzsl")
 
     add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-    add_versions("2023.06.20", "4717a06eae831eedd868744d2b91585cd08d5809")
+    add_versions("2023.07.08", "2cc9a4a1af37416237791a2149d8d9639af88961")
 
-    add_deps("nazarautils", "fmt")
-    add_deps("frozen", "ordered_map", { private = true })
+    add_deps("nazarautils")
 
     add_configs("with_nzslc", {description = "Includes standalone compiler", default = true, type = "boolean"})
     add_configs("with_symbols", {description = "Enable debug symbols in release", default = false, type = "boolean"})
