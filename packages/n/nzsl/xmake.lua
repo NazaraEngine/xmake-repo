@@ -51,7 +51,15 @@ package("nzsl")
 
     on_test(function (package)
         if package:config("with_nzslc") and not package:is_cross() then
-            os.vrun("nzslc --version")
+            local envs
+            if package:is_plat("mingw") then
+                import("core.tool.toolchain")
+                local mingw = toolchain.load("mingw")
+                if mingw and mingw:check() then
+                    envs = mingw:runenvs()
+                end
+            end
+            os.vrunv("nzslc", {"--version"}, {envs = envs})
         end
         if not package:is_binary() then
             assert(package:check_cxxsnippets({test = [[
