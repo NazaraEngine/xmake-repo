@@ -196,7 +196,10 @@ package("nazaraengine")
             package:add("defines", "NAZARA_STATIC")
         end
 
-        package:add("deps", "nzsl", { debug = package:debug(), configs = { with_symbols = package:config("with_symbols") or package:debug(), shared = true } })
+        if package:config("renderer") or package:config("graphics") then
+            package:add("deps", "nzsl", { debug = package:debug(), configs = { with_symbols = package:config("with_symbols") or package:debug(), shared = true } })
+        end
+
         if package:config("entt") then
             package:add("defines", "NAZARA_ENTT")
             package:add("deps", "entt 3.12.2")
