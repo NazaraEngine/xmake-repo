@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2023.08.12", "5a299da930de7148559e5d9c3b11c208c45c54c8")
+    add_versions("2023.08.15", "ab8bac2575fa67cc6563d4933633eb31c7b94c1b")
 
     add_deps("nazarautils")
 
