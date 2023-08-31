@@ -2,11 +2,12 @@ package("nzsl")
     set_homepage("https://github.com/NazaraEngine/ShaderLang")
     set_description("NZSL is a shader language inspired by Rust and C++ which compiles to GLSL or SPIRV")
     set_license("MIT")
-    set_policy("package.strict_compatibility", true)
 
     add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-    add_versions("2023.08.04", "043ab11ac448da81968a0d87983aa8803161573e")
+    add_versions("2023.08.30", "51865d5978ae7f999a5b660f0ed5a71fce284be1")
+
+    set_policy("package.strict_compatibility", true)
 
     add_deps("nazarautils")
 
