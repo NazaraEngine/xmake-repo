@@ -1,17 +1,28 @@
 -- Compile shaders to includables headers
 rule("compile.shaders")
-	set_extensions(".nzsl", ".nzslb")
+	set_extensions(".nzsl",	".nzslb")
+
+	on_config(function(target)
+		-- add outputdir to include	path
+		local outputdir	= target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
+		if not os.isdir(outputdir) then
+			os.mkdir(outputdir)
+		end
+		target:add("includedirs", outputdir)
+	end)
 
 	before_buildcmd_file(function (target, batchcmds, shaderfile, opt)
 		import("core.project.project")
 		import("core.tool.toolchain")
+
+		local outputdir	= target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
 
 		-- warning: project.required_package is not a stable interface, this may break in the future
 		local nzsl = path.join(project.required_package("nzsl"):installdir(), "bin", "nzslc")
 
 		-- add commands
 		batchcmds:show_progress(opt.progress, "${color.build.object}compiling.shader %s", shaderfile)
-		local argv = { "--compile=nzslb-header", "--partial", "--optimize" }
+		local argv = { "--compile=nzslb-header", "--partial", "--optimize", "--output="	.. outputdir }
 
 		-- handle --log-format
 		local kind = target:data("plugin.project.kind") or ""
