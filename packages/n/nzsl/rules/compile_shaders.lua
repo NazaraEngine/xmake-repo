@@ -16,6 +16,10 @@ rule("compile.shaders")
 		import("core.tool.toolchain")
 
 		local outputdir	= target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
+		local fileconfig = target:fileconfig(shaderfile)
+		if fileconfig and fileconfig.prefixdir then
+			outputdir = path.join(outputdir, fileconfig.prefixdir)
+		end
 
 		-- warning: project.required_package is not a stable interface, this may break in the future
 		local nzsl = path.join(project.required_package("nzsl"):installdir(), "bin", "nzslc")
