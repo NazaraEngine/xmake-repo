@@ -1,10 +1,10 @@
 -- Compile shaders to includables headers
 rule("compile.shaders")
-	set_extensions(".nzsl",	".nzslb")
+	set_extensions(".nzsl", ".nzslb")
 
 	on_config(function(target)
 		-- add outputdir to include path
-		local outputdir	= target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
+		local outputdir = target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
 		if not os.isdir(outputdir) then
 			os.mkdir(outputdir)
 		end
@@ -15,7 +15,7 @@ rule("compile.shaders")
 		import("core.tool.toolchain")
 		import("lib.detect.find_tool")
 
-		local outputdir	= target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
+		local outputdir = target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
 		local fileconfig = target:fileconfig(shaderfile)
 		if fileconfig and fileconfig.prefixdir then
 			outputdir = path.join(outputdir, fileconfig.prefixdir)
@@ -31,13 +31,18 @@ rule("compile.shaders")
 		end
 
 		-- find nzslc
-		local pkgdir = target:pkg("nzsl") and target:pkg("nzsl"):installdir()
-		local nzslc = find_tool("nzslc", { paths = pkgdir and {path.join(pkgdir, "bin")} or nil, envs = envs })
+		local nzsl = project.required_package("nzsl~host") or project.required_package("nzsl")
+		local nzsldir
+		if nzsl then
+			nzsldir = path.join(nzsl:installdir(), "bin")
+		end
+
+		local nzslc = find_tool("nzslc", { paths = nzsldir, envs = envs })
 		assert(nzslc, "nzslc not found! please install nzsl package")
 
 		-- add commands
 		batchcmds:show_progress(opt.progress, "${color.build.object}compiling.shader %s", shaderfile)
-		local argv = { "--compile=nzslb-header", "--partial", "--optimize", "--output="	.. outputdir }
+		local argv = { "--compile=nzslb-header", "--partial", "--optimize", "--output=" .. outputdir }
 		batchcmds:mkdir(outputdir)
 
 		-- handle --log-format
