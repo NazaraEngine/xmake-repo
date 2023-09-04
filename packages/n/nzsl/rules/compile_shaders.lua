@@ -38,6 +38,7 @@ rule("compile.shaders")
 		-- add commands
 		batchcmds:show_progress(opt.progress, "${color.build.object}compiling.shader %s", shaderfile)
 		local argv = { "--compile=nzslb-header", "--partial", "--optimize", "--output="	.. outputdir }
+		batchcmds:mkdir(outputdir)
 
 		-- handle --log-format
 		local kind = target:data("plugin.project.kind") or ""
