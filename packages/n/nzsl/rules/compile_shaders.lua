@@ -3,7 +3,7 @@ rule("compile.shaders")
 	set_extensions(".nzsl",	".nzslb")
 
 	on_config(function(target)
-		-- add outputdir to include	path
+		-- add outputdir to include path
 		local outputdir	= target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
 		if not os.isdir(outputdir) then
 			os.mkdir(outputdir)
@@ -13,7 +13,7 @@ rule("compile.shaders")
 
 	before_buildcmd_file(function (target, batchcmds, shaderfile, opt)
 		import("core.tool.toolchain")
-        import("lib.detect.find_tool")
+		import("lib.detect.find_tool")
 
 		local outputdir	= target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
 		local fileconfig = target:fileconfig(shaderfile)
