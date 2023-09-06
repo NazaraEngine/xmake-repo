@@ -14,6 +14,7 @@ rule("compile.shaders")
 	before_buildcmd_file(function (target, batchcmds, shaderfile, opt)
 		import("core.tool.toolchain")
 		import("lib.detect.find_tool")
+		import("core.project.project")
 
 		local outputdir = target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
 		local fileconfig = target:fileconfig(shaderfile)
