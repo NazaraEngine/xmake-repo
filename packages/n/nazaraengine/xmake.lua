@@ -167,7 +167,10 @@ package("nazaraengine")
         fetchInfo.components.__base = baseComponent
 
         if package:config("entt") then
-            fetchInfo.defines = "NAZARA_ENTT"
+            fetchInfo.defines = table.join(fetchInfo.defines or {}, "NAZARA_ENTT")
+        end
+        if package:is_debug() then
+            fetchInfo.defines = table.join(fetchInfo.defines or {}, "NAZARA_DEBUG")
         end
         for name, component in pairs(package:components()) do
             fetchInfo.components[name] = {
@@ -203,6 +206,10 @@ package("nazaraengine")
         if package:config("entt") then
             package:add("defines", "NAZARA_ENTT")
             package:add("deps", "entt 3.12.2")
+        end
+
+        if package:is_debug() then
+            package:add("defines", "NAZARA_DEBUG")
         end
     end)
 
