@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2023.11.16", "592845e35375f1ac77071e5c7ab1bd3a77e5d67c")
+    add_versions("2023.11.20", "7991071e419062cbb8ce5880651671cd4b4b9ad1")
 
     add_deps("nazarautils")
 
@@ -269,7 +269,7 @@ package("nazaraengine")
                     void test() {
                         Nz::Modules<Nz::]] .. compdata.name .. [[> nazara;
                     }
-                ]]}, {configs = {languages = "c++17"}, includes = "Nazara/" .. compdata.name .. ".hpp"}))
+                ]]}, {configs = {languages = "c++20"}, includes = "Nazara/" .. compdata.name .. ".hpp"}))
             end
         end
     end)
