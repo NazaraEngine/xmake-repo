@@ -178,6 +178,12 @@ package("nazaraengine")
                 syslinks = component:get("syslinks")
             }
         end
+        for _, componentname in pairs(package:components_orderlist()) do
+            local component = fetchInfo.components[componentname]
+            for k,v in pairs(component) do
+                fetchInfo[k] = table.join(fetchInfo[k], v)
+            end
+        end
 
         baseComponent.defines = fetchInfo.defines
         baseComponent.linkdirs = fetchInfo.linkdirs
