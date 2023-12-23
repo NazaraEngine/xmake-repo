@@ -139,6 +139,10 @@ package("nazaraengine")
     end
 
     on_fetch(function (package, opt)
+        if not opt.system then
+            return
+        end
+
         local nazara = os.getenv("NAZARA_ENGINE_PATH")
         if not nazara or not os.isdir(nazara) then
             return
@@ -181,7 +185,7 @@ package("nazaraengine")
         for _, componentname in pairs(package:components_orderlist()) do
             local component = fetchInfo.components[componentname]
             for k,v in pairs(component) do
-                fetchInfo[k] = table.join(fetchInfo[k], v)
+                fetchInfo[k] = table.join2(fetchInfo[k] or {}, v)
             end
         end
 
