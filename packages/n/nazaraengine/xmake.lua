@@ -6,12 +6,12 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2023.12.20", "496800fc5cecda9e3e14468961637921cf889a88")
+    add_versions("2023.12.23", "91221a9b4abf43c79223b053372a2845e761f6c3")
 
     add_deps("nazarautils")
 
-    -- static compilation is not supported for now
-    add_configs("shared", {description = "Build shared library.", default = not is_plat("wasm"), type = "boolean", readonly = true})
+    -- default to shared build
+    add_configs("shared", {description = "Build shared library.", default = not is_plat("wasm"), type = "boolean"})
 
     -- all modules and plugins have their own config
     add_configs("plugin_assimp",          {description = "Includes the assimp plugin", default = true, type = "boolean"})
