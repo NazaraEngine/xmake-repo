@@ -17,7 +17,7 @@ package("nazaraengine")
     add_configs("plugin_assimp",          {description = "Includes the assimp plugin", default = true, type = "boolean"})
     add_configs("plugin_ffmpeg",          {description = "Includes the ffmpeg plugin", default = false, type = "boolean"})
     add_configs("entt",                   {description = "Includes EnTT to use components and systems", default = true, type = "boolean"})
-    add_configs("with_symbols",           {description = "Enable debug symbols in release", default = false, type = "boolean"})
+    add_configs("symbols",                {description = "Enable debug symbols in release", default = false, type = "boolean"})
     if not is_plat("wasm") then
         add_configs("embed_rendererbackends", {description = "Embed renderer backend code into NazaraRenderer instead of loading them dynamically", default = false, type = "boolean"})
         add_configs("embed_plugins",          {description = "Embed enabled plugins code as static libraries", default = false, type = "boolean"})
@@ -151,7 +151,7 @@ package("nazaraengine")
         local mode
         if package:is_debug() then
             mode = "debug"
-        elseif package:config("with_symbols") then
+        elseif package:config("symbols") then
             mode = "releasedbg"
         else
             mode = "release"
@@ -210,7 +210,7 @@ package("nazaraengine")
         end
 
         if package:config("renderer") or package:config("graphics") then
-            package:add("deps", "nzsl", { debug = package:debug(), configs = { with_symbols = package:config("with_symbols") or package:debug(), shared = true } })
+            package:add("deps", "nzsl >=2023.12.31", { debug = package:debug(), configs = { symbols = package:config("symbols") or package:debug(), shared = true } })
         end
 
         if package:config("entt") then
@@ -264,7 +264,7 @@ package("nazaraengine")
 
         if package:is_debug() then
             configs.mode = "debug"
-        elseif package:config("with_symbols") then
+        elseif package:config("symbols") then
             configs.mode = "releasedbg"
         else
             configs.mode = "release"

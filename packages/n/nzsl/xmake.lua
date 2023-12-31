@@ -11,8 +11,9 @@ package("nzsl")
 
     add_deps("nazarautils")
 
-    add_configs("with_nzslc", {description = "Includes standalone compiler", default = true, type = "boolean"})
-    add_configs("with_symbols", {description = "Enable debug symbols in release", default = false, type = "boolean"})
+    add_configs("nzslc", {description = "Includes standalone compiler", default = true, type = "boolean"})
+    add_configs("symbols", {description = "Enable debug symbols in release", default = false, type = "boolean"})
+
     if is_plat("windows", "linux", "mingw", "macosx", "bsd") then
         add_configs("fs_watcher", {description = "Includes filesystem watcher", default = true, type = "boolean"})
     elseif is_plat("wasm") then
@@ -35,14 +36,14 @@ package("nzsl")
         configs.fs_watcher = package:config("fs_watcher") or false
         configs.erronwarn = false
         configs.examples = false
-        configs.with_nzslc = package:config("with_nzslc") or false
+        configs.with_nzslc = package:config("nzslc") or false
 
         -- enable unitybuild for faster compilation except on MinGW (doesn't like big object even with /bigobj)
         configs.unitybuild = not package:is_plat("mingw")
 
         if package:is_debug() then
             configs.mode = "debug"
-        elseif package:config("with_symbols") then
+        elseif package:config("symbols") then
             configs.mode = "releasedbg"
         else
             configs.mode = "release"
@@ -51,7 +52,7 @@ package("nzsl")
     end)
 
     on_test(function (package)
-        if package:config("with_nzslc") and not package:is_cross() then
+        if package:config("nzslc") and not package:is_cross() then
             local envs
             if package:is_plat("windows") then
                 import("core.tool.toolchain")
