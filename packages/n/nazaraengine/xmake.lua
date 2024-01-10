@@ -230,7 +230,9 @@ package("nazaraengine")
         configs.override_runtime = false
 
         -- enable unitybuild for faster compilation except on MinGW (doesn't like big object even with /bigobj)
-        configs.unitybuild = not package:is_plat("mingw")
+        if not os.getenv("NAZARA_DISABLE_UNITYBUILD") then
+            configs.unitybuild = not package:is_plat("mingw")
+        end
 
         configs.assimp = package:config("plugin_assimp")
         configs.ffmpeg = package:config("plugin_ffmpeg")
