@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2024.01.23", "496de948d2a0c79ab8010974b64113fdb23c0ed9")
+    add_versions("2024.01.25", "2d3d7a670f4818c44280f2cf275ccf2b78a6b9e6")
 
     add_deps("nazarautils")
 
@@ -215,7 +215,7 @@ package("nazaraengine")
 
         if package:config("entt") then
             package:add("defines", "NAZARA_ENTT")
-            package:add("deps", "entt 3.12.2")
+            package:add("deps", "entt 3.13.0")
         end
 
         if package:is_debug() then
