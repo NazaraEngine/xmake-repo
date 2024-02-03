@@ -5,7 +5,7 @@ package("nzsl")
 
     add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-    add_versions("2024.01.02", "c124b2f3e094482b833606fad66808fa2e123128")
+    add_versions("2024.02.03", "fd8fbc1d62b2ba3a34cd1de11ac0611f471805c3")
 
     set_policy("package.strict_compatibility", true)
 
@@ -16,15 +16,13 @@ package("nzsl")
 
     if is_plat("windows", "linux", "mingw", "macosx", "bsd") then
         add_configs("fs_watcher", {description = "Includes filesystem watcher", default = true, type = "boolean"})
-    elseif is_plat("wasm") then
-        -- shared build for wasm is currently unsupported due to a fmt link error
-        add_configs("shared", {description = "Build shared library.", default = false, type = "boolean", readonly = true})
     end
 
     on_load(function (package)
         package:addenv("PATH", "bin")
         if not package:config("shared") then
             package:add("defines", "NZSL_STATIC")
+            package:add("deps", "fmt")
         end
         if package:config("fs_watcher") then
             package:add("deps", "efsw")
