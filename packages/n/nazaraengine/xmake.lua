@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2024.02.09", "fe00b3fd16cee5d1c18e82fa8a20867a7399205c")
+    add_versions("2024.02.12", "ad5336eff79bff9eea73cca3693e6d4d90f371ba")
 
     add_deps("nazarautils")
 
@@ -35,16 +35,6 @@ package("nazaraengine")
                 end
             end
         },
-        bulletphysics3d = {
-            option = "bulletphysics",
-            name = "BulletPhysics3D",
-            deps = { "core" }
-        },
-        chipmunkphysics2d = {
-            option = "chipmunkphysics",
-            name = "ChipmunkPhysics2D",
-            deps = { "core" }
-        },
         core = {
             name = "Core",
             custom = function (package, component)
@@ -60,12 +50,7 @@ package("nazaraengine")
         graphics = { 
             option = "graphics",
             name = "Graphics",
-            deps = { "renderer" }
-        },
-        joltphysics3d = {
-            option = "joltphysics",
-            name = "JoltPhysics3D",
-            deps = { "core" }
+            deps = { "renderer", "textrenderer" }
         },
         network = {
             option = "network",
@@ -77,24 +62,34 @@ package("nazaraengine")
                 end
             end
         },
+        physics2d = {
+            option = "physics2d",
+            name = "Physics2D",
+            deps = { "core" }
+        },
+        physics3d = {
+            option = "physics3d",
+            name = "Physics3D",
+            deps = { "core" }
+        },
         platform = {
             option = "platform",
             name = "Platform",
-            deps = { "utility" }
+            deps = { "core" }
         },
         renderer = {
             option = "renderer",
             name = "Renderer",
-            deps = { "platform", "utility" },
+            deps = { "platform" },
             custom = function (package, component)
                 if package:is_plat("windows", "mingw") then
                     component:add("syslinks", "gdi32", "user32", "advapi32")
                 end
             end
         },
-        utility = {
-            option = "utility",
-            name = "Utility",
+        textrenderer = {
+            option = "textrenderer",
+            name = "TextRenderer",
             deps = { "core" }
         },
         widgets = {
@@ -215,7 +210,7 @@ package("nazaraengine")
 
         if package:config("entt") then
             package:add("defines", "NAZARA_ENTT")
-            package:add("deps", "entt 3.13.0")
+            package:add("deps", "entt 3.13.1")
         end
 
         if package:is_debug() then
@@ -275,13 +270,17 @@ package("nazaraengine")
     end)
 
     on_test(function (package)
+        local includes = {}
+        local classnames = {}
         for name, compdata in table.orderpairs(components) do
             if not compdata.option or package:config(compdata.option) then
-                assert(package:check_cxxsnippets({test = [[
-                    void test() {
-                        Nz::Modules<Nz::]] .. compdata.name .. [[> nazara;
-                    }
-                ]]}, {configs = {languages = "c++20"}, includes = "Nazara/" .. compdata.name .. ".hpp"}))
+                table.insert(classnames, "Nz::" .. compdata.name)
+                table.insert(includes, "Nazara/" .. compdata.name .. ".hpp")
             end
         end
+        assert(package:check_cxxsnippets({test = [[
+            void test() {
+                Nz::Modules<]] .. table.concat(classnames, ", ") .. [[> nazara;
+            }
+        ]]}, {configs = {languages = "c++20"}, includes = includes}))
     end)
