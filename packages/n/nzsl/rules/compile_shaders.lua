@@ -3,9 +3,9 @@ rule("compile.shaders")
 	set_extensions(".nzsl", ".nzslb")
 
 	on_config(function(target)
-		if not target:extraconf("rules", "compile.shaders", "inplace") then
+		if not target:extraconf("rules", "@nzsl/compile.shaders", "inplace") then
 			-- add outputdir to include path
-			local outputdir = target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
+			local outputdir = target:extraconf("rules", "@nzsl/compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "nzsl.shaders")
 			if not os.isdir(outputdir) then
 				os.mkdir(outputdir)
 			end
@@ -19,8 +19,8 @@ rule("compile.shaders")
 		import("core.project.project")
 
 		local outputdir
-		if not target:extraconf("rules", "compile.shaders", "inplace") then
-			outputdir = target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
+		if not target:extraconf("rules", "@nzsl/compile.shaders", "inplace") then
+			outputdir = target:extraconf("rules", "@nzsl/compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "nzsl.shaders")
 			local fileconfig = target:fileconfig(shaderfile)
 			if fileconfig and fileconfig.prefixdir then
 				outputdir = path.join(outputdir, fileconfig.prefixdir)
@@ -51,7 +51,7 @@ rule("compile.shaders")
 		local argv = { "--compile=nzslb-header", "--partial", "--optimize" }
 		if outputdir then
 			batchcmds:mkdir(outputdir)
-			table.insert(argv, "--output=" .. outputdir
+			table.insert(argv, "--output=" .. outputdir)
 		end
 
 		-- handle --log-format
