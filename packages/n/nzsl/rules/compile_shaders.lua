@@ -3,12 +3,14 @@ rule("compile.shaders")
 	set_extensions(".nzsl", ".nzslb")
 
 	on_config(function(target)
-		-- add outputdir to include path
-		local outputdir = target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
-		if not os.isdir(outputdir) then
-			os.mkdir(outputdir)
+		if not target:extraconf("rules", "compile.shaders", "inplace") then
+			-- add outputdir to include path
+			local outputdir = target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
+			if not os.isdir(outputdir) then
+				os.mkdir(outputdir)
+			end
+			target:add("includedirs", outputdir)
 		end
-		target:add("includedirs", outputdir)
 	end)
 
 	before_buildcmd_file(function (target, batchcmds, shaderfile, opt)
@@ -16,10 +18,13 @@ rule("compile.shaders")
 		import("lib.detect.find_tool")
 		import("core.project.project")
 
-		local outputdir = target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
-		local fileconfig = target:fileconfig(shaderfile)
-		if fileconfig and fileconfig.prefixdir then
-			outputdir = path.join(outputdir, fileconfig.prefixdir)
+		local outputdir
+		if not target:extraconf("rules", "compile.shaders", "inplace") then
+			outputdir = target:extraconf("rules", "compile.shaders", "outputdir") or path.join(target:autogendir(), "rules", "compile.shaders")
+			local fileconfig = target:fileconfig(shaderfile)
+			if fileconfig and fileconfig.prefixdir then
+				outputdir = path.join(outputdir, fileconfig.prefixdir)
+			end
 		end
 
 		-- on mingw we need run envs because of .dll dependencies which may be not part of the PATH
@@ -43,8 +48,11 @@ rule("compile.shaders")
 
 		-- add commands
 		batchcmds:show_progress(opt.progress, "${color.build.object}compiling.shader %s", shaderfile)
-		local argv = { "--compile=nzslb-header", "--partial", "--optimize", "--output=" .. outputdir }
-		batchcmds:mkdir(outputdir)
+		local argv = { "--compile=nzslb-header", "--partial", "--optimize" }
+		if outputdir then
+			batchcmds:mkdir(outputdir)
+			table.insert(argv, "--output=" .. outputdir
+		end
 
 		-- handle --log-format
 		local kind = target:data("plugin.project.kind") or ""
@@ -56,10 +64,11 @@ rule("compile.shaders")
 
 		batchcmds:vrunv(nzslc.program, argv, { curdir = ".", envs = envs })
 
-		local outputFile = path.join(path.directory(shaderfile), path.basename(shaderfile) .. ".nzslb.h")
+		local outputfile = path.join(outputdir or path.directory(shaderfile), path.basename(shaderfile) .. ".nzslb.h")
 
 		-- add deps
 		batchcmds:add_depfiles(shaderfile)
-		batchcmds:set_depmtime(os.mtime(outputFile))
-		batchcmds:set_depcache(target:dependfile(outputFile))
+		batchcmds:add_depvalues(nzsl:version())
+		batchcmds:set_depmtime(os.mtime(outputfile))
+		batchcmds:set_depcache(target:dependfile(outputfile))
 	end)
