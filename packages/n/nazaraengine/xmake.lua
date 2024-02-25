@@ -29,15 +29,27 @@ package("nazaraengine")
             option = "audio",
             name = "Audio",
             deps = { "core" },
-            custom = function (package, component)
+            custom = function (package)
+                package:add("deps", "libvorbis", {private = true, configs = {with_vorbisenc = false}})
+                if not package:is_plat("wasm") then
+                    package:add("deps", "openal-soft", {private = true, configs = {shared = true}})
+                end
+            end,
+            custom_comp = function (package, component)
                 if package:is_plat("wasm") then
                     component:add("syslinks", "openal")
                 end
-            end
+            end,
+            privatepkgs = {"dr_wav", "libflac", "minimp3"}
         },
         core = {
             name = "Core",
-            custom = function (package, component)
+            custom = function (package)
+                if package:is_plat("linux", "android") then
+                    package:add("deps", "libuuid", {private = true})
+                end
+            end,
+            custom_comp = function (package, component)
                 if package:is_plat("windows", "mingw") then
                     component:add("syslinks", "ole32")
                 elseif package:is_plat("linux") then
@@ -45,7 +57,8 @@ package("nazaraengine")
                 elseif package:is_plat("android") then
                     component:add("syslinks", "log")
                 end
-            end
+            end,
+            privatepkgs = {"concurrentqueue", "fmt", "frozen", "ordered_map", "stb", "utfcpp"}
         },
         graphics = { 
             option = "graphics",
@@ -56,7 +69,16 @@ package("nazaraengine")
             option = "network",
             name = "Network",
             deps = { "core" },
-            custom = function (package, component)
+            custom = function (package)
+                if not package:is_plat("wasm") then
+                    if package:config("static") then
+                        package:add("deps", "libcurl", {private = true, configs = {asan = false}})
+                    else
+                        package:add("deps", "libcurl", {private = true, configs = {asan = false, shared = true}})
+                    end
+                end
+            end
+            custom_comp = function (package, component)
                 if package:is_plat("windows", "mingw") then
                     component:add("syslinks", "ws2_32")
                 end
@@ -65,37 +87,57 @@ package("nazaraengine")
         physics2d = {
             option = "physics2d",
             name = "Physics2D",
-            deps = { "core" }
+            deps = { "core" },
+            privatepkgs = {"chipmunk2d"}
         },
         physics3d = {
             option = "physics3d",
             name = "Physics3D",
-            deps = { "core" }
+            deps = { "core" },
+            custom = function (package)
+                package:add("deps", "joltphysics >=4", {private = true, configs = {debug = package:is_debug()}})
+            end
         },
         platform = {
             option = "platform",
             name = "Platform",
-            deps = { "core" }
+            deps = { "core" },
+            custom = function (package)
+                if package:is_plat("linux") then
+                    package:add("deps", "libxext", "wayland", {private = true, configs = {asan = false}})
+                end
+            end,
+            privatepkgs = {"libsdl >=2.26.0"}
         },
         renderer = {
             option = "renderer",
             name = "Renderer",
             deps = { "platform" },
-            custom = function (package, component)
+            custom = function (package)
+                if not package:is_plat("wasm") then
+                    package:add("deps", "vulkan-headers", "vulkan-memory-allocator", {private = true})
+                end
+            end,
+            custom_comp = function (package, component)
                 if package:is_plat("windows", "mingw") then
                     component:add("syslinks", "gdi32", "user32", "advapi32")
                 end
-            end
+            end,
+            privatepkgs = {"opengl-headers"}
         },
         textrenderer = {
             option = "textrenderer",
             name = "TextRenderer",
-            deps = { "core" }
+            deps = { "core" },
+            custom = function (package)
+                package:add("deps", "freetype", {private = true, configs = {bzip2 = true, png = true, woff2 = true, zlib = true, debug = package:is_debug()}})
+            end
         },
         widgets = {
             option = "widgets",
             name = "Widgets",
-            deps = { "graphics" }
+            deps = { "graphics" },
+            privatepkgs = {"kiwi-solver"}
         }
     }
 
@@ -127,8 +169,8 @@ package("nazaraengine")
 
             component:add("deps", table.unwrap(compdata.deps))
             component:add("links", prefix .. compdata.name .. suffix)
-            if compdata.custom then
-                compdata.custom(package, component)
+            if compdata.custom_comp then
+                compdata.custom_comp(package, component)
             end
         end)
     end
@@ -197,6 +239,9 @@ package("nazaraengine")
         for name, compdata in table.orderpairs(components) do
             if not compdata.option or package:config(compdata.option) then
                 package:add("components", name)
+                if compdata.privatepkgs then
+                    package:add("deps", table.unpack(compdata.privatepkgs), {private = true})
+                end
             end
         end
 
@@ -211,6 +256,14 @@ package("nazaraengine")
         if package:config("entt") then
             package:add("defines", "NAZARA_ENTT")
             package:add("deps", "entt 3.13.1")
+        end
+
+        if package:config("plugin_assimp") then
+            package:add("deps", "assimp >=5.2.5", {private = true})
+        end
+
+        if package:config("plugin_ffmpeg") then
+            package:add("deps", "ffmpeg", {private = true, configs = {asan = false, gpl = false, vs_runtime = "MD"}})
         end
 
         if package:is_debug() then

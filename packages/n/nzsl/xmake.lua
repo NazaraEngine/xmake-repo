@@ -9,7 +9,8 @@ package("nzsl")
 
     set_policy("package.strict_compatibility", true)
 
-    add_deps("nazarautils")
+    add_deps("nazarautils >=2024.01.13")
+    add_deps("fast_float", "frozen", "ordered_map", {private = true})
 
     add_configs("nzslc", {description = "Includes standalone compiler", default = true, type = "boolean"})
     add_configs("symbols", {description = "Enable debug symbols in release", default = false, type = "boolean"})
@@ -26,6 +27,9 @@ package("nzsl")
         end
         if package:config("fs_watcher") then
             package:add("deps", "efsw")
+        end
+        if package:config("nzslc") then
+            package:add("deps", "cxxopts >=3.1.1", "nlohmann_json", {private = true})
         end
     end)
 
