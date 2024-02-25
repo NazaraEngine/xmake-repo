@@ -77,7 +77,7 @@ package("nazaraengine")
                         package:add("deps", "libcurl", {private = true, configs = {asan = false, shared = true}})
                     end
                 end
-            end
+            end,
             custom_comp = function (package, component)
                 if package:is_plat("windows", "mingw") then
                     component:add("syslinks", "ws2_32")
