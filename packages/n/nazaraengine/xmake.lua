@@ -137,7 +137,7 @@ package("nazaraengine")
             option = "widgets",
             name = "Widgets",
             deps = { "graphics" },
-            privatepkgs = {"kiwi-solver"}
+            privatepkgs = {"kiwisolver"}
         }
     }
 
