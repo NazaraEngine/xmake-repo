@@ -29,13 +29,13 @@ rule("compile.shaders")
 
 		-- on windows+asan/mingw we need run envs because of .dll dependencies which may be not part of the PATH
 		local envs
-		if package:is_plat("windows") then
+		if is_plat("windows") then
 			import("core.tool.toolchain")
 			local msvc = toolchain.load("msvc")
 			if msvc and msvc:check() then
 				envs = msvc:runenvs()
 			end
-		elseif package:is_plat("mingw") then
+		elseif is_plat("mingw") then
 			import("core.tool.toolchain")
 			local mingw = toolchain.load("mingw")
 			if mingw and mingw:check() then
