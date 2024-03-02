@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2024.02.27", "b9d7eddd3dedbbf67e974c13e08a147f103058ff")
+    add_versions("2024.03.02", "532d606eec31421a2ec65c74b8b625ff07966d94")
 
     add_deps("nazarautils")
 
@@ -21,7 +21,7 @@ package("nazaraengine")
     if not is_plat("wasm") then
         add_configs("embed_rendererbackends", {description = "Embed renderer backend code into NazaraRenderer instead of loading them dynamically", default = false, type = "boolean"})
         add_configs("embed_plugins",          {description = "Embed enabled plugins code as static libraries", default = false, type = "boolean"})
-        add_configs("link_openal",            {description = "Link OpenAL in the executable instead of dynamically loading it", default = false, type = "boolean"})
+        add_configs("link_openal",            {description = "Link OpenAL to the executable instead of dynamically loading it", default = false, type = "boolean"})
     end
 
     local components = {
