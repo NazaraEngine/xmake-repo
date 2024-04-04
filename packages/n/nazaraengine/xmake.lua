@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2024.03.24", "a2c012faca3455ea0a89fd16c56c4f329efc7eb7")
+    add_versions("2024.04.04", "6df32b874a5113c9fb234998134200f047f4f48f")
 
     add_deps("nazarautils")
 
@@ -247,6 +247,9 @@ package("nazaraengine")
 
         if not package:config("shared") then
             package:add("defines", "NAZARA_STATIC")
+            package:add("defines", "NAZARA_PLUGINS_STATIC")
+        elseif package:config("embed_plugins") then
+            package:add("defines", "NAZARA_PLUGINS_STATIC")
         end
 
         if package:config("renderer") or package:config("graphics") then
