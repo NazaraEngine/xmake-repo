@@ -41,7 +41,9 @@ package("nzsl")
         configs.with_nzslc = package:config("nzslc") or false
 
         -- enable unitybuild for faster compilation except on MinGW (doesn't like big object even with /bigobj)
-        configs.unitybuild = not package:is_plat("mingw")
+        if not os.getenv("NAZARA_DISABLE_UNITYBUILD") then
+            configs.unitybuild = not package:is_plat("mingw")
+        end
 
         if package:is_debug() then
             configs.mode = "debug"
