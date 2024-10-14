@@ -29,6 +29,9 @@ package("nzsl")
         if package:config("fs_watcher") then
             package:add("deps", "efsw")
         end
+        if package:config("nzsla") then
+            package:add("deps", "lz4", {private = package:config("shared")})
+        end
         if package:config("nzslc") then
             package:add("deps", "cxxopts >=3.1.1", "nlohmann_json", {private = true})
         end
