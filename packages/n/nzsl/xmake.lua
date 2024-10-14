@@ -5,13 +5,14 @@ package("nzsl")
 
     add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-    add_versions("2024.09.14", "ac9ac60a1e98aa9c2c3874d6b0b78532045f0a18")
+    add_versions("2024.10.14", "3bec3328877d4ed0a54c242ef1fd82e079c47922")
 
     set_policy("package.strict_compatibility", true)
 
     add_deps("nazarautils >=2024.02.27")
     add_deps("fast_float", "frozen", "ordered_map", {private = true})
 
+    add_configs("nzsla", {description = "Includes standalone archiver", default = true, type = "boolean"})
     add_configs("nzslc", {description = "Includes standalone compiler", default = true, type = "boolean"})
     add_configs("symbols", {description = "Enable debug symbols in release", default = false, type = "boolean"})
 
@@ -38,6 +39,7 @@ package("nzsl")
         configs.fs_watcher = package:config("fs_watcher") or false
         configs.erronwarn = false
         configs.examples = false
+        configs.with_nzsla = package:config("nzsla") or false
         configs.with_nzslc = package:config("nzslc") or false
 
         -- enable unitybuild for faster compilation except on MinGW (doesn't like big object even with /bigobj)
@@ -52,26 +54,32 @@ package("nzsl")
         else
             configs.mode = "release"
         end
+
         import("package.tools.xmake").install(package, configs)
     end)
 
     on_test(function (package)
-        if package:config("nzslc") and not package:is_cross() then
+        if (package:config("nzsla") or package:config("nzslc")) and not package:is_cross() then
             local envs
             if package:is_plat("windows") then
                 import("core.tool.toolchain")
-                local msvc = toolchain.load("msvc")
+                local msvc = package:toolchain("msvc")
                 if msvc and msvc:check() then
                     envs = msvc:runenvs()
                 end
             elseif package:is_plat("mingw") then
                 import("core.tool.toolchain")
-                local mingw = toolchain.load("mingw")
+                local mingw = package:toolchain("mingw")
                 if mingw and mingw:check() then
                     envs = mingw:runenvs()
                 end
             end
-            os.vrunv("nzslc", {"--version"}, {envs = envs})
+            if package:config("nzsla") then
+                os.vrunv("nzsla", {"--version"}, {envs = envs})
+            end
+            if package:config("nzslc") then
+                os.vrunv("nzslc", {"--version"}, {envs = envs})
+            end
         end
         if not package:is_binary() then
             assert(package:check_cxxsnippets({test = [[
