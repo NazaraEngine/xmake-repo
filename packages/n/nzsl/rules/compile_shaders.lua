@@ -23,14 +23,16 @@ rule("compile.shaders")
 			end
 		end
 
-		target:rule_add(target:rule("@nzsl/archive.shaders"))
-		for archive, archivefiles in table.orderpairs(archives) do
-			local args = { rule = "@nzsl/archive.shaders", always_added = true, compress = true, files = archivefiles }
-			if archive:endswith(".nzsla.h") or archive:endswith(".nzsla.hpp") then
-				args.header = true
-			end
+		if not table.empty(archives) then
+			assert(target:rule("@nzsl/archive.shaders"), "you must add the @nzsl/archive.shaders rule to the target")
+			for archive, archivefiles in table.orderpairs(archives) do
+				local args = { rule = "@nzsl/archive.shaders", always_added = true, compress = true, files = archivefiles }
+				if archive:endswith(".nzsla.h") or archive:endswith(".nzsla.hpp") then
+					args.header = true
+				end
 
-			target:add("files", archive, args)
+				target:add("files", archive, args)
+			end
 		end
 	end)
 
