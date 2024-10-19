@@ -28,7 +28,8 @@ rule("compile.shaders")
 			for archive, archivefiles in table.orderpairs(archives) do
 				local args = { rule = "@nzsl/archive.shaders", always_added = true, compress = true, files = archivefiles }
 				if archive:endswith(".nzsla.h") or archive:endswith(".nzsla.hpp") then
-					args.header = true
+					args.header = path.extension(archive)
+					archive = archive:sub(1, -#args.header - 1) -- foo.nzsla.h => foo.nzsla
 				end
 
 				target:add("files", archive, args)

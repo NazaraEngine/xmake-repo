@@ -1,5 +1,6 @@
 -- Merge binary shaders to archivess
 rule("archive.shaders")
+	set_extensions(".nzsla")
 	add_deps("@nzsl/find_nzsl")
 	add_deps("@nzsl/compile.shaders", { order = true })
 
@@ -11,7 +12,7 @@ rule("archive.shaders")
 		local fileconfig = target:fileconfig(sourcefile)
 
 		batchcmds:show_progress(opt.progress, "${color.build.object}archiving.shaders %s", sourcefile)
-		local argv = { "--archive", "--output=" .. sourcefile }
+		local argv = { "--archive" }
 
 		if fileconfig.compress then
 			if type(fileconfig.compress) == "string" then
@@ -21,9 +22,15 @@ rule("archive.shaders")
 			end
 		end
 
+		local outputfile = sourcefile
 		if fileconfig.header then
 			table.insert(argv, "--header")
+			if type(fileconfig.header) == "string" then
+				outputfile = outputfile .. fileconfig.header
+			end
 		end
+
+		table.insert(argv, "--output=" .. outputfile)
 
 		for _, shaderfile in ipairs(fileconfig.files) do
 			table.insert(argv, shaderfile)
@@ -34,6 +41,6 @@ rule("archive.shaders")
 
 		-- add deps
 		batchcmds:add_depvalues(nzsla.version)
-		batchcmds:set_depmtime(os.mtime(sourcefile))
+		batchcmds:set_depmtime(os.mtime(outputfile))
 		batchcmds:set_depcache(target:dependfile(sourcefile))
 end)
