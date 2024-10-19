@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2024.10.16", "168aa274e906092c3c543dd82f8a52a447c1bdad")
+    add_versions("2024.10.19", "52ad2de9d02959289e6107eb92fa296daee379bf")
 
     add_deps("nazarautils")
 
@@ -40,7 +40,7 @@ package("nazaraengine")
                     component:add("syslinks", "openal")
                 end
             end,
-            privatepkgs = {"dr_wav", "libflac", "minimp3"}
+            privatepkgs = {"dr_mp3", "dr_wav", "libflac"}
         },
         core = {
             name = "Core",
@@ -253,7 +253,7 @@ package("nazaraengine")
         end
 
         if package:config("renderer") or package:config("graphics") then
-            package:add("deps", "nzsl >=2023.12.31", { debug = package:debug(), configs = { symbols = package:config("symbols") or package:debug(), shared = true } })
+            package:add("deps", "nzsl >=2024.10.19", { debug = package:debug(), configs = { symbols = package:config("symbols") or package:debug(), shared = true } })
         end
 
         if package:config("entt") then
