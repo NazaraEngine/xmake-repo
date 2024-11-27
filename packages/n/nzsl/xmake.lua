@@ -5,7 +5,7 @@ package("nzsl")
 
     add_urls("https://github.com/NazaraEngine/ShaderLang.git")
 
-    add_versions("2024.11.17+1", "093ff7c2c331a0478e0f1cc451422c1d5ba7f6e5")
+    add_versions("2024.11.27", "ff3c31b371249463924204a9bd9ba6ef59038334")
 
     set_policy("package.strict_compatibility", true)
 
