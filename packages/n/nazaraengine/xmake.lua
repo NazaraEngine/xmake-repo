@@ -323,6 +323,10 @@ package("nazaraengine")
             configs.mode = "release"
         end
         import("package.tools.xmake").install(package, configs)
+
+        if package:has_tool("cxx", "cl") then
+            package:add("cxxflags", "/Zc:preprocessor") -- /Zc:preprocessor is required because Nazara uses __VA_OPT__ (C++20)
+        end
     end)
 
     on_test(function (package)
