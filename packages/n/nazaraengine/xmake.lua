@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2024.12.09", "3bc5c08e1400c2f1fa4513d1449c25db449aac32")
+    add_versions("2024.12.13", "0b01a58f299496e1a823b6e3eed205caf3cba55e")
 
     add_deps("nazarautils")
 
@@ -72,9 +72,9 @@ package("nazaraengine")
             custom = function (package)
                 if not package:is_plat("wasm") then
                     if package:config("static") then
-                        package:add("deps", "libcurl", {private = true, configs = {asan = false}})
+                        package:add("deps", "libcurl", {private = true, configs = {asan = false, openssl = package:is_plat("linux", "android", "cross")}})
                     else
-                        package:add("deps", "libcurl", {private = true, configs = {asan = false, shared = true}})
+                        package:add("deps", "libcurl", {private = true, configs = {asan = false, openssl = package:is_plat("linux", "android", "cross"), shared = true}})
                     end
                 end
             end,
