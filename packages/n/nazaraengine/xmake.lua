@@ -107,7 +107,7 @@ package("nazaraengine")
                     package:add("deps", "libxext", "wayland", {private = true, configs = {asan = false}})
                 end
             end,
-            privatepkgs = {"libsdl >=2.26.0"}
+            privatepkgs = {"libsdl3"}
         },
         renderer = {
             option = "renderer",
