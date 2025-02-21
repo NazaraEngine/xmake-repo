@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2025.02.21", "ca46591a6d00e018a1116978fce8111bcf355b40")
+    add_versions("2025.02.21", "7f23f567796e64a7f8cf170fdd9b232669a872f6")
 
     add_deps("nazarautils")
 
@@ -16,7 +16,7 @@ package("nazaraengine")
     -- all modules and plugins have their own config
     add_configs("plugin_assimp",          {description = "Includes Assimp plugin", default = true, type = "boolean"})
     add_configs("plugin_ffmpeg",          {description = "Includes FFMpeg plugin", default = false, type = "boolean"})
-    add_configs("plugin_imgui",           {description = "Includes ImGui plugin", default = true, type = "boolean"})
+    add_configs("plugin_imgui",           {description = "Includes ImGui plugin", default = nil, type = "boolean"})
     add_configs("entt",                   {description = "Includes EnTT to use components and systems", default = true, type = "boolean"})
     add_configs("symbols",                {description = "Enable debug symbols in release", default = false, type = "boolean"})
     if not is_plat("wasm") then
@@ -237,6 +237,14 @@ package("nazaraengine")
     end)
 
     on_load(function (package)
+        if package:config("plugin_imgui") then
+            if not package:config("renderer") or not package:config("textrenderer") then
+                raise("package(nazaraengine): ImGui plugin requires Renderer and TextRenderer modules")
+            end
+        elseif package:config("plugin_imgui") == nil then
+            package:config_set("plugin_imgui", package:config("renderer") and package:config("textrenderer"))
+        end
+
         for name, compdata in table.orderpairs(components) do
             if not compdata.option or package:config(compdata.option) then
                 package:add("components", name)
