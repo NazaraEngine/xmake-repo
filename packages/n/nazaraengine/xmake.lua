@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2025.02.12", "76fc49d0377d6dacc1be5568259f3e2792c93eb3")
+    add_versions("2025.02.21", "ca46591a6d00e018a1116978fce8111bcf355b40")
 
     add_deps("nazarautils")
 
@@ -14,8 +14,9 @@ package("nazaraengine")
     add_configs("shared", {description = "Build shared library.", default = not is_plat("wasm"), type = "boolean"})
 
     -- all modules and plugins have their own config
-    add_configs("plugin_assimp",          {description = "Includes the assimp plugin", default = true, type = "boolean"})
-    add_configs("plugin_ffmpeg",          {description = "Includes the ffmpeg plugin", default = false, type = "boolean"})
+    add_configs("plugin_assimp",          {description = "Includes Assimp plugin", default = true, type = "boolean"})
+    add_configs("plugin_ffmpeg",          {description = "Includes FFMpeg plugin", default = false, type = "boolean"})
+    add_configs("plugin_imgui",           {description = "Includes ImGui plugin", default = true, type = "boolean"})
     add_configs("entt",                   {description = "Includes EnTT to use components and systems", default = true, type = "boolean"})
     add_configs("symbols",                {description = "Enable debug symbols in release", default = false, type = "boolean"})
     if not is_plat("wasm") then
@@ -269,6 +270,10 @@ package("nazaraengine")
             package:add("deps", "ffmpeg", {private = true, configs = {asan = false, gpl = false, vs_runtime = "MD"}})
         end
 
+        if package:config("plugin_imgui") then
+            package:add("deps", "imgui v1.91.1-docking", {private = true})
+        end
+
         if package:is_debug() then
             package:add("defines", "NAZARA_DEBUG")
         end
@@ -287,6 +292,7 @@ package("nazaraengine")
 
         configs.assimp = package:config("plugin_assimp")
         configs.ffmpeg = package:config("plugin_ffmpeg")
+        configs.imgui = package:config("plugin_imgui")
 
         for name, compdata in table.orderpairs(components) do
             if compdata.option then
