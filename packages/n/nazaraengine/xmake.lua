@@ -277,7 +277,7 @@ package("nazaraengine")
         end
 
         if package:config("plugin_imgui") then
-            package:add("deps", "imgui v1.91.1-docking")
+            package:add("deps", "imgui v1.91.1-docking", { debug = package:debug() })
         end
 
         if package:is_debug() then
