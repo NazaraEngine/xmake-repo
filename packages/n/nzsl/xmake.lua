@@ -9,7 +9,7 @@ package("nzsl")
 
     set_policy("package.strict_compatibility", true)
 
-    add_deps("nazarautils >=2024.02.27")
+    add_deps("nazarautils")
     add_deps("fast_float", "frozen", "ordered_map", {private = true})
 
     add_configs("nzsla", {description = "Includes standalone archiver", default = true, type = "boolean"})
