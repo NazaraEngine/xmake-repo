@@ -4,9 +4,10 @@ package("nazarautils")
     set_description("Header-only utility library for Nazara projects")
     set_license("MIT")
 
-    add_urls("https://github.com/NazaraEngine/NazaraUtils.git")
+    add_urls("https://github.com/NazaraEngine/NazaraUtils/archive/refs/tags/$(version).tar.gz",
+             "https://github.com/NazaraEngine/NazaraUtils.git")
 
-    add_versions("2025.02.05", "d2f5d902ed9ac2bc8e26a015b1ff02edc5e3b550")
+    add_versions("v1.0.0", "924ea35e99b163b4fd88b61fbc848d384be497e3b0dc36fa762cc5143312524a")
 
     set_policy("package.strict_compatibility", true)
 
