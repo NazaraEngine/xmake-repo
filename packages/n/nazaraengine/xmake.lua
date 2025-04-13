@@ -260,7 +260,7 @@ package("nazaraengine")
         end
 
         if package:config("renderer") or package:config("graphics") then
-            package:add("deps", "nzsl >=2024.10.19", { debug = package:debug(), configs = { symbols = package:config("symbols") or package:debug(), shared = true } })
+            package:add("deps", "nzsl", { debug = package:debug(), configs = { symbols = package:config("symbols") or package:debug(), shared = true } })
         end
 
         if package:config("entt") then
