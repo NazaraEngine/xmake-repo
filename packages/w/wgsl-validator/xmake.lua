@@ -1,16 +1,12 @@
 package("wgsl-validator")
     set_homepage("https://github.com/NazaraEngine/wgsl-validator")
-    set_description("NZSL is a shader language inspired by Rust and C++ which compiles to GLSL or SPIRV")
+    set_description("WGSL validator in Rust with C bindings.")
     set_license("MIT")
 
     add_urls("https://github.com/NazaraEngine/wgsl-validator.git")
 
     add_urls("https://github.com/NazaraEngine/wgsl-validator/archive/refs/tags/$(version).tar.gz",
              "https://github.com/NazaraEngine/wgsl-validator.git")
-
-    set_kind("library")
-    set_homepage("https://example.com")
-    set_description("Rust library with FFI")
 
     on_install("linux", "macosx", "windows", function (package)
         import("lib.detect.find_tool")
