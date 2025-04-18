@@ -9,19 +9,11 @@ package("wgsl-validator")
              "https://github.com/NazaraEngine/wgsl-validator.git")
 
     on_install("linux", "macosx", "windows", function (package)
-        import("lib.detect.find_tool")
-        local cargo = find_tool("cargo")
-        if not cargo then
-            if is_host("windows") then
-                os.vrun("powershell -Command \"iwr https://win.rustup.rs -UseBasicParsing -OutFile rustup-init.exe; ./rustup-init.exe -y\"")
-            else
-                os.vrun("curl https://sh.rustup.rs -sSf | sh -s -- -y")
-            end
-            local home = os.getenv("USERPROFILE") or os.getenv("HOME")
-            local cargo_bin = path.join(home, ".cargo", "bin")
-            os.addenv("PATH", cargo_bin)
-        end
-
+        local rust_dir = path.join(os.projectdir(), ".rust")
+        local outdata, _ = os.iorun("curl https://sh.rustup.rs -sSf")
+        io.writefile(path.join(rust_dir, "rustup-init.sh"), outdata)
+        os.execv("/usr/bin/sh", { path.join(rust_dir, "rustup-init.sh"), "--no-modify-path", "-y" }, { envs = { RUSTUP_HOME = path.join(rust_dir, ".rustup"), CARGO_HOME= path.join(rust_dir, ".cargo") } })
+        os.addenv("PATH", path.join(rust_dir, "bin"))
         os.vrun("cargo build --release")
 
         os.cp("target/release/*.a", package:installdir("lib"))
