@@ -12,7 +12,7 @@ package("wgsl-validator")
         local rust_dir = path.join(os.projectdir(), ".rust")
         local outdata, _ = os.iorun("curl https://sh.rustup.rs -sSf")
         io.writefile(path.join(rust_dir, "rustup-init.sh"), outdata)
-        os.execv("/usr/bin/sh", { path.join(rust_dir, "rustup-init.sh"), "--no-modify-path", "-y" }, { envs = { RUSTUP_HOME = path.join(rust_dir, ".rustup"), CARGO_HOME= path.join(rust_dir, ".cargo") } })
+        os.execv("/usr/bin/sh", { path.join(rust_dir, "rustup-init.sh"), "--no-modify-path", "-q", "-y" }, { envs = { RUSTUP_HOME = path.join(rust_dir, ".rustup"), CARGO_HOME= path.join(rust_dir, ".cargo") } })
         os.addenv("PATH", path.join(rust_dir, "bin"))
         os.vrun("cargo build --release")
 
