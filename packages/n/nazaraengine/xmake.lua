@@ -291,6 +291,11 @@ package("nazaraengine")
         configs.tests = false
         configs.override_runtime = false
 
+        -- fixed in abf6bf7, temporary package fix
+        if not package:config("renderer") then
+            configs.compile_shaders = false
+        end
+
         -- enable unitybuild for faster compilation except on MinGW (doesn't like big object even with /bigobj)
         if not os.getenv("NAZARA_DISABLE_UNITYBUILD") then
             configs.unitybuild = not package:is_plat("mingw")
