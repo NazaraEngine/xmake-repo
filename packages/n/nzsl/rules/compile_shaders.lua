@@ -38,6 +38,8 @@ rule("compile.shaders")
 	end)
 
 	before_buildcmd_file(function (target, batchcmds, shaderfile, opt)
+		import("core.base.semver")
+
 		local outputdir = target:data("nzsl_includedirs")
 		local nzslc = target:data("nzslc")
 		local runenvs = target:data("nzsl_runenv")
@@ -48,7 +50,10 @@ rule("compile.shaders")
 
 		-- add commands
 		batchcmds:show_progress(opt.progress, "${color.build.object}compiling.shader %s", shaderfile)
-		local argv = { "--compile=nzslb" .. (header and "-header" or ""), "--partial", "--optimize", "--skip-unchanged" }
+		local argv = { "--compile=nzslb" .. (header and "-header" or ""), "--partial", "--optimize" }
+		if semver.compare(nzslc.version, "1.1") >= 0 then
+			table.insert(argv, "--skip-unchanged")
+		end
 		if outputdir then
 			batchcmds:mkdir(outputdir)
 			table.insert(argv, "--output=" .. outputdir)
