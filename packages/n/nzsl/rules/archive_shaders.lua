@@ -20,7 +20,10 @@ rule("archive.shaders")
 		local fileconfig = target:fileconfig(sourcefile)
 
 		batchcmds:show_progress(opt.progress, "${color.build.object}archiving.shaders %s", sourcefile)
-		local argv = { "--archive", "--skip-unchanged" }
+		local argv = { "--archive" }
+		if semver.compare(nzsla.version, "1.1.0") >= 0 then
+			table.insert(argv, "--skip-unchanged")
+		end
 
 		if fileconfig.compress then
 			if type(fileconfig.compress) == "string" then
