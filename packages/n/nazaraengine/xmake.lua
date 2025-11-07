@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2025.10.01", "a1182dcf9823e2f161ddc73811183e6ba9945044")
+    add_versions("2025.11.07", "63043976b1a387310e19c59d9da695307c8972fa")
 
     add_deps("nazarautils")
 
@@ -22,7 +22,6 @@ package("nazaraengine")
     if not is_plat("wasm") then
         add_configs("embed_rendererbackends", {description = "Embed renderer backend code into NazaraRenderer instead of loading them dynamically", default = false, type = "boolean"})
         add_configs("embed_plugins",          {description = "Embed enabled plugins code as static libraries", default = false, type = "boolean"})
-        add_configs("link_openal",            {description = "Link OpenAL to the executable instead of dynamically loading it", default = false, type = "boolean"})
     end
 
     local components = {
@@ -32,16 +31,8 @@ package("nazaraengine")
             deps = { "core" },
             custom = function (package)
                 package:add("deps", "libvorbis", {private = true, configs = {with_vorbisenc = false}})
-                if not package:is_plat("wasm") then
-                    package:add("deps", "openal-soft", {private = true, configs = {shared = true}})
-                end
             end,
-            custom_comp = function (package, component)
-                if package:is_plat("wasm") then
-                    component:add("syslinks", "openal")
-                end
-            end,
-            privatepkgs = {"dr_mp3", "dr_wav", "libflac"}
+            privatepkgs = {"dr_mp3", "dr_wav", "libflac", "miniaudio"}
         },
         core = {
             name = "Core",
@@ -56,7 +47,7 @@ package("nazaraengine")
                 elseif package:is_plat("linux") then
                     component:add("syslinks", "pthread", "dl")
                 elseif package:is_plat("android") then
-                    component:add("syslinks", "log")
+                    component:add("syslinks", "android", "log")
                 end
             end,
             privatepkgs = {"concurrentqueue", "fmt", "frozen", "ordered_map", "stb", "utfcpp"}
@@ -96,7 +87,7 @@ package("nazaraengine")
             name = "Physics3D",
             deps = { "core" },
             custom = function (package)
-                package:add("deps", "joltphysics v5.3.0", {private = true, configs = {debug = package:is_debug()}})
+                package:add("deps", "joltphysics v5.4.0", {private = true, configs = {debug = package:is_debug()}})
             end
         },
         platform = {
@@ -291,11 +282,6 @@ package("nazaraengine")
         configs.tests = false
         configs.override_runtime = false
 
-        -- fixed in abf6bf7, temporary package fix
-        if not package:config("renderer") then
-            configs.compile_shaders = false
-        end
-
         -- enable unitybuild for faster compilation except on MinGW (doesn't like big object even with /bigobj)
         if not os.getenv("NAZARA_DISABLE_UNITYBUILD") then
             configs.unitybuild = not package:is_plat("mingw")
@@ -325,11 +311,9 @@ package("nazaraengine")
         if not package:is_plat("wasm") then
             configs.embed_rendererbackends = package:config("embed_rendererbackends")
             configs.embed_plugins = package:config("embed_plugins")
-            configs.link_openal = package:config("link_openal")
         else
             configs.embed_rendererbackends = true
             configs.embed_plugins = true
-            configs.link_openal = true
         end
 
         if package:is_debug() then
