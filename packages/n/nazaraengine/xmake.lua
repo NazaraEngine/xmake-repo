@@ -87,7 +87,7 @@ package("nazaraengine")
             name = "Physics3D",
             deps = { "core" },
             custom = function (package)
-                package:add("deps", "joltphysics v5.4.0", {private = true, configs = {debug = package:is_debug()}})
+                package:add("deps", "joltphysics v5.5.0", {private = true, configs = {debug = package:is_debug()}})
             end
         },
         platform = {
