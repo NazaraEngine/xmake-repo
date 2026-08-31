@@ -6,7 +6,7 @@ package("nazaraengine")
 
     set_urls("https://github.com/NazaraEngine/NazaraEngine.git")
 
-    add_versions("2026.04.13", "2380cf9927c8925d971fa5c1228f52f95c59a036")
+    add_versions("2026.08.31", "67b5eb98e9efe485405e124882d4bbb4275fd44c")
 
     add_deps("nazarautils")
 
@@ -87,7 +87,7 @@ package("nazaraengine")
             name = "Physics3D",
             deps = { "core" },
             custom = function (package)
-                package:add("deps", "joltphysics v5.5.0", {private = true, configs = {debug = package:is_debug()}})
+                package:add("deps", "joltphysics v5.6.0", {private = true, configs = {debug = package:is_debug()}})
             end
         },
         platform = {
